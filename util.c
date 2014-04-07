@@ -1,4 +1,4 @@
-ï»¿#include"global.h"
+#include"global.h"
 #include"util.h"
 
 #define ERR_MAX 65
@@ -6,7 +6,7 @@
 char * err[ERR_MAX];
 char * msg[MSG_MAX];
 FILE * log_file;
-//éœ€è¦åˆå§‹åŒ–
+//ĞèÒª³õÊ¼»¯
 set_type statement_first;
 set_type factor_first;
 set_type const_first;
@@ -44,7 +44,7 @@ void insert_set(set_type s, enum symbol_type sym)
 	s[(int) sym] = 1;
 }
 
-void log_init(/*char * logfile_name*/){
+void util_init(/*char * logfile_name*/){
 
 	statement_first = new_set();
 	statement_first[IDENTIFIER_SYM] = 1;
@@ -61,6 +61,7 @@ void log_init(/*char * logfile_name*/){
 	block_first[FUNC_SYM] = 1;
 	block_first[PROC_SYM] = 1;
 	block_first[BEGIN_SYM] = 1;
+	block_first[PERIOD_SYM] = 1;
 
 	factor_first = new_set();
 	factor_first[INTEGER_CONST_SYM] = 1;
@@ -90,80 +91,81 @@ void log_init(/*char * logfile_name*/){
 	msg[7]="strings";
 
 	//num=0;
-	err[0]="undef id|è¯¥æ ‡è¯†ç¬¦æœªå®šä¹‰";
-	err[1]="multi def|æ ‡è¯†ç¬¦é‡å¤å®šä¹‰";
-	err[2]="identifier|åº”æ˜¯æ ‡è¯†ç¬¦";
-	err[3]="program incomplete|å‡ºç°ä¸¥é‡é”™è¯¯ï¼Œç¨‹åºæ— æ³•ç»§ç»­ç¼–è¯‘";
-	err[4]=")åº”æ˜¯'ï¼‰'";
-	err[5]=":|åº”æ˜¯'ï¼š'ï¼Œåœ¨è¯´æ˜ç±»å‹æ—¶å¿…é¡»æœ‰æ­¤å†’å·";
-	err[6]="syntax|éæ³•ç¬¦å·ï¼Œç¼–è¯‘ç¨‹åºå°†è·³è¯»è¯¥ç¬¦å·å’Œåé¢çš„æŸäº›ç¬¦å·";
-	err[7]="ident,var|å½¢å¼å‚æ•°è¡¨ä¸­ï¼Œå½¢å‚è¯´æ˜åº”ä»¥æ ‡è¯†ç¬¦æˆ–varå¼€å¤´";
+	err[0]="undef id|¸Ã±êÊ¶·ûÎ´¶¨Òå";
+	err[1]="multi def|±êÊ¶·ûÖØ¸´¶¨Òå";
+	err[2]="identifier|Ó¦ÊÇ±êÊ¶·û";
+	err[3]="program incomplete|³öÏÖÑÏÖØ´íÎó£¬³ÌĞòÎŞ·¨¼ÌĞø±àÒë";
+	err[4]=")Ó¦ÊÇ'£©'";
+	err[5]=":|Ó¦ÊÇ'£º'£¬ÔÚËµÃ÷ÀàĞÍÊ±±ØĞëÓĞ´ËÃ°ºÅ";
+	err[6]="syntax|·Ç·¨·ûºÅ£¬±àÒë³ÌĞò½«Ìø¶Á¸Ã·ûºÅºÍºóÃæµÄÄ³Ğ©·ûºÅ";
+	err[7]="ident,var|ĞÎÊ½²ÎÊı±íÖĞ£¬ĞÎ²ÎËµÃ÷Ó¦ÒÔ±êÊ¶·û»òvar¿ªÍ·";
 	err[8]="of";
-	err[9]="åº”æ˜¯'ï¼ˆ'";
-	err[10]="id,array|ç±»å‹å®šä¹‰å¿…é¡»ä»¥æ ‡è¯†ç¬¦,arrayæˆ–recordå¼€å¤´";
-	err[11]="[|åº”æ˜¯[";
-	err[12]="]|åº”æ˜¯]";
-	err[13]=":|åº”æ˜¯':'";
-	err[14]=";|åº”æ˜¯'ï¼›'";
-	err[15]="fun.type|å‡½æ•°ç»“æœå¿…é¡»æ˜¯integerï¼Œrealï¼Œcharç±»å‹";
-	err[16]="=|åº”æ˜¯'='ï¼Œ'ï¼š='ï¼Œåªèƒ½åœ¨èµ‹å€¼è¯­å¥é‡Œä½¿ç”¨ï¼Œè€Œä¸èƒ½åœ¨è¯´æ˜ä¸­ä½¿ç”¨";
+	err[9]="Ó¦ÊÇ'£¨'";
+	err[10]="id,array|ÀàĞÍ¶¨Òå±ØĞëÒÔ±êÊ¶·û,array»òrecord¿ªÍ·";
+	err[11]="[|Ó¦ÊÇ[";
+	err[12]="]|Ó¦ÊÇ]";
+	err[13]=":|Ó¦ÊÇ':'";
+	err[14]=";|Ó¦ÊÇ'£»'";
+	err[15]="fun.type|º¯Êı½á¹û±ØĞëÊÇinteger£¬real£¬charÀàĞÍ";
+	err[16]="=|Ó¦ÊÇ'='£¬'£º='£¬Ö»ÄÜÔÚ¸³ÖµÓï¾äÀïÊ¹ÓÃ£¬¶ø²»ÄÜÔÚËµÃ÷ÖĞÊ¹ÓÃ";
 	err[17]="boolean";
-	err[18]="convar typ|åœ¨foråé¢çš„å¾ªç¯å˜é‡åªèƒ½æ˜¯intergerï¼Œcharå‹";
-	err[19]="type|forè¯­å¥ä¸­åˆå€¼æˆ–ç»ˆå€¼è¡¨è¾¾å¼å¿…é¡»ä¸å¾ªç¯å˜é‡ç±»å‹ç›¸åŒ";
+	err[18]="convar typ|ÔÚforºóÃæµÄÑ­»·±äÁ¿Ö»ÄÜÊÇinterger£¬charĞÍ";
+	err[19]="type|forÓï¾äÖĞ³õÖµ»òÖÕÖµ±í´ïÊ½±ØĞëÓëÑ­»·±äÁ¿ÀàĞÍÏàÍ¬";
 	err[20]="prog.param";
-	err[21]="too big|æ•°å¤ªå¤§";
-	err[22]=".|ç¨‹åºç»“å°¾æ˜¯'ã€‚'ï¼Œè¯·æ£€æŸ¥ç›¸åº”çš„beginå’Œendã€‚";
+	err[21]="too big|ÊıÌ«´ó";
+	err[22]=".|³ÌĞò½áÎ²ÊÇ'¡£'£¬Çë¼ì²éÏàÓ¦µÄbeginºÍend¡£";
 	err[23]="type(case)";
-	err[24]="character|éæ³•å­—ç¬¦";
-	err[25]="const id|åœ¨å¸¸é‡å®šä¹‰ä¸­ï¼Œç­‰å·åé¢å¿…é¡»æ˜¯å¸¸æ•°æˆ–å¸¸é‡æ ‡è¯†ç¬¦";
-	err[26]="index type|ä¸‹æ ‡è¡¨è¾¾å¼å¿…é¡»ä¸æ•°ç»„è¯´æ˜ä¸­çš„ä¸‹æ ‡ç±»å‹ç›¸åŒ";
-	err[27]="index bound|æ•°ç»„è¯´æ˜ä¸­,ä¸‹ç•Œä¸èƒ½è¶…è¿‡ä¸Šç•Œ,åŒæ—¶å®ƒä»¬çš„ç±»å‹å¿…é¡»ç›¸åŒ(åŒä¸ºæ•´æ•°,æˆ–å­—ç¬¦),å®æ•°ä¸Šä¸‹ç•Œæ˜¯éæ³•çš„";
-	err[28]="no array|æ²¡æœ‰è¿™æ ·çš„æ•°ç»„";
-	err[29]="type id|åº”æ˜¯ç±»å‹æ ‡è¯†ç¬¦";
-	err[30]="undef type|è¯¥ç±»å‹æ²¡æœ‰å®šä¹‰(ä¸å…è®¸é€’å½’å®šä¹‰ç±»å‹";
-	err[31]="no record|æ²¡æœ‰è¿™æ ·çš„è®°å½•";
+	err[24]="character|·Ç·¨×Ö·û";
+	err[25]="const id|ÔÚ³£Á¿¶¨ÒåÖĞ£¬µÈºÅºóÃæ±ØĞëÊÇ³£Êı»ò³£Á¿±êÊ¶·û";
+	err[26]="index type|ÏÂ±ê±í´ïÊ½±ØĞëÓëÊı×éËµÃ÷ÖĞµÄÏÂ±êÀàĞÍÏàÍ¬";
+	err[27]="index bound|Êı×éËµÃ÷ÖĞ,ÏÂ½ç²»ÄÜ³¬¹ıÉÏ½ç,Í¬Ê±ËüÃÇµÄÀàĞÍ±ØĞëÏàÍ¬(Í¬ÎªÕûÊı,»ò×Ö·û),ÊµÊıÉÏÏÂ½çÊÇ·Ç·¨µÄ";
+	err[28]="no array|Ã»ÓĞÕâÑùµÄÊı×é";
+	err[29]="type id|Ó¦ÊÇÀàĞÍ±êÊ¶·û";
+	err[30]="undef type|¸ÃÀàĞÍÃ»ÓĞ¶¨Òå(²»ÔÊĞíµİ¹é¶¨ÒåÀàĞÍ";
+	err[31]="no record|Ã»ÓĞÕâÑùµÄ¼ÇÂ¼";
 	err[32]="bool type";
-	err[33]="arith type|è¯¥ç®—æœ¯è¡¨è¾¾å¼çš„ç±»å‹ä¸åˆæ³•";
-	err[34]="integer|modè¿ç®—çš„æ“ä½œç¬¦å¿…é¡»æ˜¯æ•´æ•°";
-	err[35]="types|ç›¸æ¯”è¾ƒçš„å¯¹è±¡çš„ç±»å‹å¿…é¡»ç›¸åŒï¼Œé™¤éå®ƒä»¬ä¸€ä¸ªæ˜¯æ•´å‹ï¼Œå¦ä¸€ä¸ªæ˜¯å®å‹";
-	err[36]="param type|å®å‚å’Œå¯¹åº”çš„å½¢å‚å¿…é¡»ç›¸åŒï¼Œé™¤éè¦ä¹ˆå½¢å‚ä¸ºå®æ•°çš„å€¼è€Œå®å‚ä¸ºæ•´å‹æˆ–å­—ç¬¦å‹ï¼Œè¦ä¹ˆå½¢å‚ä¸ºæ•´å‹çš„å€¼è€Œå®å‚ä¸ºå­—ç¬¦å‹";err[37]="variable id|åº”æ˜¯å˜é‡";
-	err[38]="string|å­—ç¬¦ä¸²å¤ªé•¿æˆ–ç¼ºå°‘ä¸€ä¸ªå­—ç¬¦";
-	err[39]="no. of pars|å®å‚ä¸ªæ•°ä¸å½¢å‚ä¸ªæ•°ä¸ç­‰";
-	err[40]="real number|å°æ•°ç‚¹åæ²¡æœ‰æ•°å­—";
-	err[41]="type|readæˆ–writeçš„å‚æ•°ç±»å‹ä¸æ­£ç¡®";
-	err[42]="real type|è¯¥è¡¨è¾¾å¼åº”ä¸ºå®å‹";
+	err[33]="arith type|¸ÃËãÊõ±í´ïÊ½µÄÀàĞÍ²»ºÏ·¨";
+	err[34]="integer|modÔËËãµÄ²Ù×÷·û±ØĞëÊÇÕûÊı";
+	err[35]="types|Ïà±È½ÏµÄ¶ÔÏóµÄÀàĞÍ±ØĞëÏàÍ¬£¬³ı·ÇËüÃÇÒ»¸öÊÇÕûĞÍ£¬ÁíÒ»¸öÊÇÊµĞÍ";
+	err[36]="param type|Êµ²ÎºÍ¶ÔÓ¦µÄĞÎ²Î±ØĞëÏàÍ¬£¬³ı·ÇÒªÃ´ĞÎ²ÎÎªÊµÊıµÄÖµ¶øÊµ²ÎÎªÕûĞÍ»ò×Ö·ûĞÍ£¬ÒªÃ´ĞÎ²ÎÎªÕûĞÍµÄÖµ¶øÊµ²ÎÎª×Ö·ûĞÍ";err[37]="variable id|Ó¦ÊÇ±äÁ¿";
+	err[38]="string|×Ö·û´®Ì«³¤»òÈ±ÉÙÒ»¸ö×Ö·û";
+	err[39]="no. of pars|Êµ²Î¸öÊıÓëĞÎ²Î¸öÊı²»µÈ";
+	err[40]="real number|Ğ¡ÊıµãºóÃ»ÓĞÊı×Ö";
+	err[41]="type|read»òwriteµÄ²ÎÊıÀàĞÍ²»ÕıÈ·";
+	err[42]="real type|¸Ã±í´ïÊ½Ó¦ÎªÊµĞÍ";
 	err[43]="integer";
-	err[44]="var,const|è¡¨è¾¾å¼ä¸­ä¸èƒ½å‡ºç°ç±»å‹æˆ–è¿‡ç¨‹æ ‡è¯†ç¬¦";
-	err[45]="var,proc|åº”æ˜¯å˜é‡æˆ–è¿‡ç¨‹ã€å‡½æ•°æ ‡è¯†ç¬¦";
-	err[46]="types(:=)|åœ¨èµ‹å€¼è¯­å¥ä¸­è¢«èµ‹å˜é‡åº”ä¸è¡¨è¾¾å¼ç±»å‹ç›¸åŒï¼Œé™¤éå‰è€…ä¸ºå®å‹è€Œåè€…ä¸ºæ•´å‹";  err[47]="typ(case)";
+	err[44]="var,const|±í´ïÊ½ÖĞ²»ÄÜ³öÏÖÀàĞÍ»ò¹ı³Ì±êÊ¶·û";
+	err[45]="var,proc|Ó¦ÊÇ±äÁ¿»ò¹ı³Ì¡¢º¯Êı±êÊ¶·û";
+	err[46]="types(:=)|ÔÚ¸³ÖµÓï¾äÖĞ±»¸³±äÁ¿Ó¦Óë±í´ïÊ½ÀàĞÍÏàÍ¬£¬³ı·ÇÇ°ÕßÎªÊµĞÍ¶øºóÕßÎªÕûĞÍ";  err[47]="typ(case)";
 	err[48]="type";
-	err[49]="store ovfl|å†…å­˜æº¢å‡º";
-	err[50]="constant|åº”æ˜¯å¸¸é‡";
-	err[51]=":=|åº”æ˜¯'ï¼š='";
-	err[52]="then|åº”æ˜¯then ";
-	err[53]="while|åº”æ˜¯while";
-	err[54]="do|åº”æ˜¯do";
-	err[55]="to downto|åº”æ˜¯toæˆ–downto";
-	err[56]="begin|åº”æ˜¯begin";
-	err[57]="end|åº”æ˜¯end";
-	err[58]="factor|å› å­å¿…é¡»ä»¥æ ‡è¯†ç¬¦ï¼Œå¸¸é‡ï¼Œæˆ–'ï¼ˆ'å¼€å§‹";
-	err[59]="å­—ç¬¦ä¸²ä¸­å‡ºç°å¼‚å¸¸å­—ç¬¦";
-	err[60]="å­—ç¬¦å¼‚å¸¸ï¼Œç¼ºå°‘'";
+	err[49]="store ovfl|ÄÚ´æÒç³ö";
+	err[50]="constant|Ó¦ÊÇ³£Á¿";
+	err[51]=":=|Ó¦ÊÇ'£º='";
+	err[52]="then|Ó¦ÊÇthen ";
+	err[53]="while|Ó¦ÊÇwhile";
+	err[54]="do|Ó¦ÊÇdo";
+	err[55]="to downto|Ó¦ÊÇto»òdownto";
+	err[56]="begin|Ó¦ÊÇbegin";
+	err[57]="end|Ó¦ÊÇend";
+	err[58]="factor|Òò×Ó±ØĞëÒÔ±êÊ¶·û£¬³£Á¿£¬»ò'£¨'¿ªÊ¼";
+	err[59]="×Ö·û´®ÖĞ³öÏÖÒì³£×Ö·û";
+	err[60]="×Ö·ûÒì³££¬È±ÉÙ'";
 
 }
+
 void info(int line_num, char *info){
-	fprintf(log_file, info);
+	//fprintf(log_file, info);
 	printf("LINE %d:%s\n", line_num, info);
 }
 
 void error(int line_num, int error_id){
-	fprintf(log_file, "%s\n", err[error_id]);
+	//fprintf(log_file, "%s\n", err[error_id]);
 	printf("%s\n", err[error_id]);
 }
 void fatal(int table_id){
 	char* msg[8];
 	error(lineno, 49);
-	fprintf(log_file, "compiler table for %s is too small!\n", msg[table_id]);
+	//fprintf(log_file, "compiler table for %s is too small!\n", msg[table_id]);
 	printf("compiler table for %s is too small!\n", msg[table_id]);
 	exit(0);
 }

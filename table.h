@@ -1,9 +1,9 @@
-ï»¿#ifndef TABLE_H_INCLUDED
+#ifndef TABLE_H_INCLUDED
 #define TABLE_H_INCLUDED
 
 #include"global.h"
 #include"util.h"
-//å­—ç¬¦ä¸²ä¿å­˜åŒºå¤§å°
+//×Ö·û´®±£´æÇø´óĞ¡
 #define STAB_SIZE 600
 
 
@@ -26,40 +26,40 @@ extern int find_identifier(char *name);
 //extern char stab[STAB_SIZE];
 extern int get_current_level();
 
-//å‘ç¬¦å·è¡¨ä¸­ç™»å…¥æ–°æ ‡è¯†ç¬¦ï¼ŒåŠå…¶æ‰€åœ¨å±‚æ¬¡
+//Ïò·ûºÅ±íÖĞµÇÈëĞÂ±êÊ¶·û£¬¼°ÆäËùÔÚ²ã´Î
 extern void register_identifier(char * name);
 extern int get_current_block();
-/*//ä»åå‘å‰æŸ¥æ‰¾ç¬¦å·ï¼Œç›´åˆ°0ï¼Œè¿”å›ä¸‹æ ‡
+/*//´ÓºóÏòÇ°²éÕÒ·ûºÅ£¬Ö±µ½0£¬·µ»ØÏÂ±ê
 extern int find_identifier(char * name);*/
-/* è¿›å…¥ä¸€ä¸ªåˆ†ç¨‹åºå‰è°ƒç”¨*/
+/* ½øÈëÒ»¸ö·Ö³ÌĞòÇ°µ÷ÓÃ*/
 extern void clear_code_table();
-/*è¿”å›å½“å‰ä¸­é—´ä»£ç ä¸‹æ ‡*/
+/*·µ»Øµ±Ç°ÖĞ¼ä´úÂëÏÂ±ê*/
 extern int get_cur_code_idx();
-/*è¿”å›ä¸‹æ ‡ä¸ºidxçš„ä¸­é—´ä»£ç */
+/*·µ»ØÏÂ±êÎªidxµÄÖĞ¼ä´úÂë*/
 extern struct code get_ir_code(int idx);
 extern void gen_code(enum instruction_type instruction,struct address x,struct address y,struct address z);
-//æ£€æŸ¥æ ‡è¯†ç¬¦åœ¨æœ¬å±‚æ˜¯å¦å·²ç»æ³¨å†Œï¼Œå¦‚æœåœ¨å‡½æ•°å’Œè¿‡ç¨‹ä¸­ï¼Œå‡½æ•°è¿‡ç¨‹åä¹Ÿè¦æ£€æŸ¥
+//¼ì²é±êÊ¶·ûÔÚ±¾²ãÊÇ·ñÒÑ¾­×¢²á£¬Èç¹ûÔÚº¯ÊıºÍ¹ı³ÌÖĞ£¬º¯Êı¹ı³ÌÃûÒ²Òª¼ì²é
 extern int local_registed(char * name);
-/*//å°†å¸¸é‡çš„ç±»å‹ï¼Œå€¼è¡¥ä¸Š
+/*//½«³£Á¿µÄÀàĞÍ£¬Öµ²¹ÉÏ
 extern void fix_const(enum type_type cost_type, int value);*/
-//å°†æœ€è¿‘çš„countä¸ªæ ‡è¯†ç¬¦è¡¥ä¸Šå±æ€§, sizeä¸ºæ•°ç»„çš„å¤§å°ï¼Œå¦‚æœä¸æ˜¯æ•°ç»„åˆ™ä¸º0
+//½«×î½üµÄcount¸ö±êÊ¶·û²¹ÉÏÊôĞÔ, sizeÎªÊı×éµÄ´óĞ¡£¬Èç¹û²»ÊÇÊı×éÔòÎª0
 extern void fix_identifier(int count, enum type_type type, enum object_type object, int size, int value);
-//å°†å­ç¨‹åºä¿¡æ¯è¡¥å…¨
+//½«×Ó³ÌĞòĞÅÏ¢²¹È«
 extern void register_block(char *name, enum object_type object);
 extern void fix_block(enum type_type);
 extern int count_parameter(int func_idx);
-//æ‰“å°ç¬¦å·è¡¨
+//´òÓ¡·ûºÅ±í
 extern void list_symbol_table();
 
-//è¿”å›æœ€è¿‘ä¸€ä¸ªå­ç¨‹åºçš„ä¸‹æ ‡
+//·µ»Ø×î½üÒ»¸ö×Ó³ÌĞòµÄÏÂ±ê
 //extern int find_latest_block(int level);
-//å­ç¨‹åºé€€æ ˆ
+//×Ó³ÌĞòÍËÕ»
 extern void pop_block();
-//æ¸…é™¤levelå±‚æ¬¡çš„ä¸´æ—¶å˜é‡
+//Çå³ılevel²ã´ÎµÄÁÙÊ±±äÁ¿
 extern void pop_temp(int level);
-//äº§ç”Ÿä¸€ä¸ªæ–°ä¸´æ—¶å˜é‡ï¼Œè¿”å›åœ°å€
+//²úÉúÒ»¸öĞÂÁÙÊ±±äÁ¿£¬·µ»ØµØÖ·
 extern struct address new_temp(enum type_type type);
-//äº§ç”Ÿä¸€ä¸ªæ–°çš„æ•°ç»„å…ƒç´ åœ°å€ï¼Œarray_idxæ˜¯æ•°ç»„ååœ¨ç¬¦å·è¡¨ä¸­çš„ä¸‹æ ‡ï¼Œindexæ˜¯ä¸‹æ ‡çš„ä¸´æ—¶å˜é‡
+//²úÉúÒ»¸öĞÂµÄÊı×éÔªËØµØÖ·£¬array_idxÊÇÊı×éÃûÔÚ·ûºÅ±íÖĞµÄÏÂ±ê£¬indexÊÇÏÂ±êµÄÁÙÊ±±äÁ¿
 extern struct address array_element(int array_idx, struct address index);
 extern struct address get_array_addr(int idx);
 extern struct address get_array_index_addr(int idx);

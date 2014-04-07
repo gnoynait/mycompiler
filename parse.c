@@ -3,8 +3,9 @@
 #include"scan.h"
 #include"util.h"
 #include"table.h"
-
+#include"assm.h"
 int function_index;//函数的符号表下标，如果为0， 表示不是函数,如果在一个子程序中函数名被赋值，则置为0
+
 //用于中间代码的空地址
 const struct address empty_address = { EMPTY_ADDR, 0};
 
@@ -50,12 +51,14 @@ int parse_const(){
 		return sign * num;
 	}
 	else{
-		info(lineno, "常量定义错误");
+		//info(lineno, "常量定义错误");
 		skip_to(s);
 	}	
 	free(s);
 	return 0;
 }
+
+
 static enum type_type get_type(struct address a){
 	switch(a.type){
 	case VAR_ADDR:
@@ -86,7 +89,7 @@ struct address parse_array_element(){
 	set_type s;
 	enum type_type type;
 	struct address array_index;
-	struct address element;
+	//struct address element;
 	struct address array_name;
 
 	ident_idx = find_identifier(identifier);
@@ -130,7 +133,7 @@ void parse_real_paralist(int function_idx){
 	int pidx;
 	struct address paddr;
 	int para_num = identifier_value(function_idx);
-	while(para_count < para_num && symbol == IDENTIFIER_SYM){
+	while(para_count < para_num/* && symbol == IDENTIFIER_SYM*/){
 		para_count++;
 		
 		pidx = find_identifier(identifier);
@@ -230,31 +233,41 @@ struct address parse_factor(){
 		else if(symbol== IDENTIFIER_SYM){
 			ident_idx = find_identifier(identifier);
 			if(ident_idx == 0){
-				info(lineno, "变量未定义");
-			}
-			switch(identifier_object(ident_idx)){
-			case CONSTANT:
-				addr.pointer = identifier_value(ident_idx);
-				addr.type = VALUE_ADDR;
+				info(lineno, "标识符未定义");
 				next_sym();
-				break;
-			case VARIABLE:
-			case VAR_PARA:
-			case VALUE_PARA:
-				addr.pointer = ident_idx;
-				addr.type = VAR_ADDR;
-				next_sym();
-				break;
-			case ARRAY:
-				addr = parse_array_element();
-				break;
-			case FUNCTION:
-				addr = parse_call_statement();
-				break;
-			default://PROCEDURE
-				info(lineno, "因子中不能有过程调用");
-				addr = parse_call_statement();
+				skip_end = new_set();
+				add_set(skip_end, statement_first);
+				add_set(skip_end, block_first);
+				add_set(skip_end, factor_first);
+				insert_set(skip_end, SEMICOLON_SYM);
+				skip_to(skip_end);
+				free(skip_end);
 			}
+			
+			else
+				switch(identifier_object(ident_idx)){
+				case CONSTANT:
+					addr.pointer = identifier_value(ident_idx);
+					addr.type = VALUE_ADDR;
+					next_sym();
+					break;
+				case VARIABLE:
+				case VAR_PARA:
+				case VALUE_PARA:
+					addr.pointer = ident_idx;
+					addr.type = VAR_ADDR;
+					next_sym();
+					break;
+				case ARRAY:
+					addr = parse_array_element();
+					break;
+				case FUNCTION:
+					addr = parse_call_statement();
+					break;
+				default://PROCEDURE
+					info(lineno, "因子中不能有过程调用");
+					addr = parse_call_statement();
+				}
 		}
 
 		else if(symbol == LROUND_SYM){
@@ -386,13 +399,17 @@ int parse_assign_statement( )
 		dest.type = VAR_ADDR;
 		next_sym();
 	}	
-	if(symbol != BECOMES_SYM){
-		info(lineno, "赋值语句缺少:=");
-		if(symbol == EQL_SYM)
+	if(symbol != BECOMES_SYM){		
+		if(symbol == EQL_SYM){
 			next_sym();
+			info(lineno, "赋值应使用\':=\'");
+		}
+		else
+			info(lineno, "赋值语句缺少:=");
 	}
 	next_sym();
 	source = parse_expression();
+	match_type(dest, source);
 	gen_code(ASSIGN_INS, source, empty_address, dest);
 	return ident_idx;
 }
@@ -435,6 +452,8 @@ void parse_read_statement()
 			gen_code(READI_INS, empty_address, empty_address, v);
 		next_sym();
 	}while(symbol == COMMA_SYM);
+	/*//add this for read the new line character.
+	gen_code(READL_INS, empty_address, empty_address, empty_address);*/
 
 	if(symbol != RROUND_SYM)
 		info(lineno, "读语句应有)");
@@ -465,6 +484,7 @@ void parse_write_statement()
 		
 		next_sym();
 		if(symbol == COMMA_SYM){
+			next_sym();
 			b = parse_expression();
 			if(get_type(b) == CHAR_TYPE)
 				gen_code(WRITEC_INS, empty_address, empty_address, b);
@@ -492,7 +512,7 @@ void parse_write_statement()
 
 void parse_for_statement(){
 	int id;
-	set_type s;
+	//set_type s;
 	struct address l_start, l_end;
 	struct address addr = empty_address, start,limit;
 	enum instruction_type ins = ERROR_INS;
@@ -576,7 +596,7 @@ void parse_case_statement(){
 	struct address a, b;
 	struct address l_end;
 	struct address l_next, l_current;
-	set_type s;
+	//set_type s;
 	l_end = new_label();
 	l_next = new_label();
 	//l_next = l_end;//第一个值没有用
@@ -836,17 +856,26 @@ void parse_const_dec(){
 			next_sym();
 		}
 		else{
-			info(lineno, "常量定义不完整，缺少\'=\'");
+			info(lineno, "常量定义语法错误");
 			//if(in_set(symbol, const_first))
+			s = new_set();
+			add_set(s, block_first);
+			insert_set(s, IDENTIFIER_SYM);
+			skip_to(s);
+			free(s);
 		}
 		
-
+		
 		if(symbol == COMMA_SYM){
 			next_sym();
 			parse_const_dec();
 		}
 		else if(symbol == SEMICOLON_SYM){
 			next_sym();
+			if(symbol == IDENTIFIER_SYM){
+				info(lineno, "常量定义应以\',\'分隔");
+				parse_const_dec();
+			}
 			return;
 		}
 		else{
@@ -863,7 +892,7 @@ void parse_const_dec(){
 void parse_var_dec(){
 	int count = 0;	//一次声明的个数
 	int size = 0;	//数组大小
-	int ix;
+	//int ix;
 	enum type_type type = INT_TYPE;
 	enum object_type object = VARIABLE;	//变量或者数组
 	set_type s;
@@ -1062,11 +1091,11 @@ void parse_multi_statement(){
 		add_set(s1, statement_first);
 		skip_to(s1);
 		free(s1);
+
 	}
 	else 
 		next_sym();
 	parse_statement();
-	//TODO：FIXME! 加入错误处理，复合语句最后一句当没有';'
 	while(symbol == SEMICOLON_SYM){
 		next_sym();
 		parse_statement();
@@ -1074,6 +1103,7 @@ void parse_multi_statement(){
 	if(symbol != END_SYM){
 		info(lineno, "复合语句应以end结尾");
 		s1 = new_set();
+		insert_set(s1, END_SYM);
 		add_set(s1, block_first);
 		add_set(s1, statement_first);
 		skip_to(s1);
@@ -1092,26 +1122,47 @@ void parse_block(enum type_type block_type){
 	set_type set;
 	
 	set = new_set();
-	add_set(set, block_first);
-	if(!in_set(symbol, set)){
-		info(lineno, "应以const,var,或 begin");
-		skip_to(set);
+	if(!in_set(symbol, block_first)){
+		info(lineno, "应是const,var或 begin");
+		skip_to(block_first);
 	}
 	if(symbol == CONST_SYM){
 		next_sym();
 		parse_const_dec();
 	}
-	else skip_to(block_first);
+	if(!in_set(symbol, block_first)){
+		info(lineno, "语法错误");
+		skip_to(block_first);
+	}
 	if(symbol == VAR_SYM){
 		next_sym();
 		parse_var_dec();
 	}
-	while(symbol == FUNC_SYM || symbol == PROC_SYM){
-		sub_block_type = parse_proc_func_dec();
-		if(symbol != CONST_SYM && symbol != VAR_SYM && symbol != FUNC_SYM && symbol != PROC_SYM && symbol != BEGIN_SYM){
-			info(lineno, "子程序声明错误");
+	if(!in_set(symbol, block_first)){
+		info(lineno, "语法错误");
+		skip_to(block_first);
+	}
+	while(symbol == FUNC_SYM || symbol == PROC_SYM ||
+		symbol == VAR_SYM || symbol == CONST_SYM)
+	{
+		if(symbol == FUNC_SYM || symbol == PROC_SYM){
+			sub_block_type = parse_proc_func_dec();		
+			if(!in_set(symbol, block_first)){
+				info(lineno, "子程序声明错误");
+				skip_to(block_first);
+			}
+			parse_block(sub_block_type);
 		}
-		parse_block(sub_block_type);
+		else if(symbol == VAR_SYM){
+			info(lineno, "声明顺序");
+			next_sym();
+			parse_var_dec();
+		}
+		else{
+			info(lineno, "声明顺序");
+			next_sym();
+			parse_const_dec();
+		}
 	}
 
 	if(symbol != BEGIN_SYM){
@@ -1133,8 +1184,8 @@ void parse_block(enum type_type block_type){
 	list_symbol_table();
 	list_code();
 #endif
-	list_symbol_table();
-	list_code();
+	//list_symbol_table();
+	//list_code();
 	gen_assm(get_cur_code_idx());
 	pop_block();
 	if(get_current_level() != 0){
@@ -1147,16 +1198,16 @@ void parse_block(enum type_type block_type){
 		if(symbol != PERIOD_SYM)
 		info(lineno, "程序应以.结束");
 	}
-	
+	free(set);
 }
 
 //语法分析程序开始处
 void parse_programe(){
 	next_sym();
 	parse_block(NO_TYPE);
-	if(symbol != PERIOD_SYM){
+	/*if(symbol != PERIOD_SYM){
 		info(lineno, "缺少\'.\'");
-	}
+	}*/
 	assm_over();
 }
 

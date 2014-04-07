@@ -1,7 +1,8 @@
-ï»¿#include"global.h"
+#include"global.h"
 #include"scan.h"
 #include"table.h"
 #include"util.h"
+#include<stdlib.h>
 
 char identifier[ID_SIZE];    //cur identifier
 char ch = ' ';            //current char
@@ -13,9 +14,10 @@ static char line[LINE_MAX];
 static int cc = 0;         //char count
 static int ll = 0;         //line length
 FILE * source_file;
+int end_of_file = 0;
 
-#define RESERVE_NUM 20		//ä¿ç•™å­—ä¸ªæ•°
-//ä¿ç•™å­—å
+#define RESERVE_NUM 20		//±£Áô×Ö¸öÊı
+//±£Áô×ÖÃû
 char * reserve_name[RESERVE_NUM]={
 	"const",
 	"var",
@@ -38,7 +40,7 @@ char * reserve_name[RESERVE_NUM]={
 	"read",
 	"write"
 };
-//ä¿ç•™å­—æ ‡è¯†ç¬¦
+//±£Áô×Ö±êÊ¶·û
 enum symbol_type reserve_symbol[RESERVE_NUM]={
 	CONST_SYM,			//	const
 	VAR_SYM,			//	var	
@@ -90,7 +92,7 @@ enum symbol_type ch_symbol(int c){
 		return SEMICOLON_SYM;
 	case '.':
 		return PERIOD_SYM;
-	default:	//å¤±è´¥ï¼Œè¿”å›END_SYMä½œä¸ºå‡ºé”™ç‰¹å¾
+	default:	//Ê§°Ü£¬·µ»ØEND_SYM×÷Îª³ö´íÌØÕ÷
 		return END_SYM;
 	}
 }
@@ -98,6 +100,18 @@ enum symbol_type ch_symbol(int c){
 
 static int next_ch()
 {
+	/*if(end_of_file){
+		info(lineno, "³ÌĞò²»ÍêÕû");
+		fclose(source_file);
+		fclose(code_file);
+		fclose(source_file);
+		fclose(code_file);
+		free(const_first);
+		free(factor_first);
+		free(statement_first);
+		free(block_first);
+		exit(-1);
+	}*/
 	if(cc == ll){
 		if (feof(source_file)){
 			info(lineno, "program incomplete.\n");
@@ -109,11 +123,11 @@ static int next_ch()
 		while (ch != '\n'){
 			if (EOF == fscanf(source_file,"%c", &ch)){
 				line[ll] = '\0';
+				end_of_file = 1;
 				break;
 			}
-			//end richard
 			printf("%c", ch);
-			fprintf(log_file, "%c", ch);
+			//fprintf(log_file, "%c", ch);
 			line[ll] = ch;
 			ll++;
 		}
@@ -128,11 +142,11 @@ static int next_ch()
 int next_sym()
 {
 	int k;
-	/* å¿½ç•¥ç©ºæ ¼ã€æ¢è¡Œå’ŒTAB */
+	/* ºöÂÔ¿Õ¸ñ¡¢»»ĞĞºÍTAB */
 	while (isspace(ch)){
 		next_ch();
 	}
-	if (isalpha(ch)){			/* åå­—æˆ–ä¿ç•™å­—ä»¥alphaå¼€å¤´ */
+	if (isalpha(ch)){			/* Ãû×Ö»ò±£Áô×ÖÒÔalpha¿ªÍ· */
 		k = 0;
 		symbol = IDENTIFIER_SYM;
 		do {
@@ -151,20 +165,20 @@ int next_sym()
 			}
 		}
 	}
-	else if (isdigit(ch)){			/* æ£€æµ‹æ˜¯å¦ä¸ºæ•°å­—ï¼šä»¥0..9å¼€å¤´ */
+	else if (isdigit(ch)){			/* ¼ì²âÊÇ·ñÎªÊı×Ö£ºÒÔ0..9¿ªÍ· */
 		num = 0;
 		symbol = INTEGER_CONST_SYM;
 		do {
 			num = 10*num + ch - '0';
 			next_ch();
-		} while (isdigit(ch)); /* è·å–æ•°å­—çš„å€¼ */
+		} while (isdigit(ch)); /* »ñÈ¡Êı×ÖµÄÖµ */
 		
 		if (num > INTEGER_MAX || num < 0){
-			error(lineno, 21);		//æ•°å€¼å¤ªå¤§
+			error(lineno, 21);		//ÊıÖµÌ«´ó
 			num = 0;
 		}
 	}
-	else if (ch == ':'){		/* æ£€æµ‹èµ‹å€¼ç¬¦å· */
+	else if (ch == ':'){		/* ¼ì²â¸³Öµ·ûºÅ */
 		next_ch();
 		if (ch == '='){
 			symbol = BECOMES_SYM;
@@ -174,7 +188,7 @@ int next_sym()
 			symbol = COLON_SYM;
 		}
 	}
-	else if (ch == '<') {		/* æ£€æµ‹å°äºæˆ–å°äºç­‰äºç¬¦å· */
+	else if (ch == '<') {		/* ¼ì²âĞ¡ÓÚ»òĞ¡ÓÚµÈÓÚ·ûºÅ */
 		next_ch();
 		if (ch == '='){
 			symbol = LEQ_SYM;
@@ -186,7 +200,7 @@ int next_sym()
 		}
 		else symbol = LSS_SYM;
 	}
-	else if (ch=='>'){		/* æ£€æµ‹å¤§äºæˆ–å¤§äºç­‰äºç¬¦å· */
+	else if (ch=='>'){		/* ¼ì²â´óÓÚ»ò´óÓÚµÈÓÚ·ûºÅ */
 		next_ch();
 		if (ch == '='){
 			symbol = GEQ_SYM;
@@ -207,7 +221,7 @@ int next_sym()
 			error(lineno, 38);
 			k = 0;
 		}
-		str_buffer[k-1] = '\0';//æ¶ˆå»"
+		str_buffer[k-1] = '\0';//ÏûÈ¥"
 		symbol = STR_CONST_SYM;
 		next_ch();
 	}
@@ -218,17 +232,17 @@ int next_sym()
 		next_ch();
 		if(ch != '\''){
 			num = 0;
-			error(lineno, 60);//å°‘ä¸€ä¸ªâ€™
-			// TODO:è·³åˆ°æ­£ç¡®çš„ä½ç½®ã€‚
+			error(lineno, 60);//ÉÙÒ»¸ö¡¯
+			// TODO:Ìøµ½ÕıÈ·µÄÎ»ÖÃ¡£
 		}
 		else
 			next_ch();
 	}
 	else{
-		symbol = ch_symbol(ch);		/* å½“ç¬¦å·ä¸æ»¡è¶³ä¸Šè¿°æ¡ä»¶æ—¶ï¼Œå…¨éƒ¨æŒ‰ç…§å•å­—ç¬¦ç¬¦å·å¤„ç† */
+		symbol = ch_symbol(ch);		/* µ±·ûºÅ²»Âú×ãÉÏÊöÌõ¼şÊ±£¬È«²¿°´ÕÕµ¥×Ö·û·ûºÅ´¦Àí */
 		if(symbol == END_SYM){
-			info(lineno, "æ‰¾ä¸åˆ°å¯¹åº”çš„æ ‡è¯†ç¬¦");
-			printf("now ch is:%d\n", ch);
+			info(lineno, "²»ÄÜÊ¶±ğµÄ×Ö·û£º");
+			printf("%d\n", ch);
 		}
 		if (symbol != PERIOD_SYM)
 			next_ch();

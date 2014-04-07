@@ -20,71 +20,44 @@ start:
 ____main proc
 	push ebp
 	mov ebp, esp
-	sub esp, 104
+	sub esp, 12
 	push ebx
 	push esi
 	push edi
-	mov eax, 1
-	mov [ebp-24], eax
-label1:
-	mov eax, [ebp-24]
-	cmp eax, 3
-	jg label2
-	invoke crt_scanf, SADD("%c"), addr [ebp-76]
-	invoke crt_scanf, SADD("%c"), addr [ebp-80]
-	mov eax, [ebp-76]
-	mov [ebp-4], eax
-	mov eax, [ebp-80]
-	mov [ebp-8], eax
-	print chr$(" the first charater is ")
-	invoke crt_printf, SADD("%c "), dword ptr [ebp-76]
-	print chr$(10)
-	print chr$(" ths acii of c1 is ")
-	invoke crt_printf, SADD("%d "), dword ptr [ebp-4]
-	print chr$(10)
-	print chr$(" the second charater is ")
-	invoke crt_printf, SADD("%c "), dword ptr [ebp-80]
-	print chr$(10)
-	print chr$(" the acii of c2 is ")
-	invoke crt_printf, SADD("%d "), dword ptr [ebp-8]
-	print chr$(10)
-	mov eax, 5
-	mov [ebp-16], eax
-	mov eax, 4
-	mov [ebp-20], eax
-	mov eax, [ebp-8]
-	mov ecx, 5
-	mov edx, 0
-	idiv ecx
-	mov [ebp-84], eax
+	invoke crt_scanf, SADD("%d"), addr [ebp-4]
+	invoke crt_scanf, SADD("%d"), addr [ebp-8]
+	invoke crt_scanf, SADD("%d"), addr [ebp-12]
 	mov eax, [ebp-4]
-	add eax, [ebp-84]
-	mov [ebp-88], eax
-	mov eax, [ebp-88]
-	add eax, [ebp-16]
-	mov [ebp-92], eax
-	mov eax, [ebp-92]
-	sub eax, [ebp-20]
-	mov [ebp-96], eax
-	mov eax, [ebp-96]
-	mov edx, [ebp-76]
-	imul edx
-	mov [ebp-100], eax
-	mov eax, [ebp-100]
-	sub eax, [ebp-80]
-	mov [ebp-104], eax
-	invoke crt_printf, SADD("%d "), dword ptr [ebp-104]
+	cmp eax, [ebp-8]
+	jl label1
+	mov eax, [ebp-4]
+	cmp eax, [ebp-12]
+	jge label3
+	print chr$(" a ge b a l c")
 	print chr$(10)
-	mov eax, [ebp-24]
-	inc eax
-	mov [ebp-24], eax
-	jmp label1
+	jmp label4
+label3:
+	print chr$(" a ge b a ge c")
+	print chr$(10)
+label4:
+	jmp label2
+label1:
+	mov eax, [ebp-4]
+	cmp eax, [ebp-12]
+	jge label5
+	print chr$("a l b a l c")
+	print chr$(10)
+	jmp label6
+label5:
+	print chr$("a l b a ge c")
+	print chr$(10)
+label6:
 label2:
 	mov eax, [ebp+8]
 	pop edi
 	pop esi
 	pop ebx
-	add esp, 104
+	add esp, 12
 	pop ebp
 	ret
 ____main endp

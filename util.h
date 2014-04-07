@@ -1,4 +1,4 @@
-ï»¿#ifndef UTIL_H_INCLUDE
+#ifndef UTIL_H_INCLUDE
 #define UTIL_H_INCLUDE
 extern void clear_set(set_type s);
 extern set_type statement_first;
@@ -10,8 +10,8 @@ extern set_type new_set();
 extern int in_set(enum symbol_type sym, set_type s);
 extern void add_set(set_type s1, set_type s2);
 extern void insert_set(set_type s, enum symbol_type sym);
-/*æ‰“å¼€åˆå§‹åŒ–æ–‡ä»¶*/
-extern void log_init(/*char * logfile_name*/);/*è¾“å‡ºä¿¡æ¯åˆ°æ–‡ä»¶ä¸Šå’Œå±å¹•ä¸Š*/
+/*´ò¿ª³õÊ¼»¯ÎÄ¼ş*/
+extern void util_init(/*char * logfile_name*/);/*Êä³öĞÅÏ¢µ½ÎÄ¼şÉÏºÍÆÁÄ»ÉÏ*/
 extern void info(int line_num, char *info);
 extern void error(int line_num, int error_id);
 extern void fatal(int table_id);
