@@ -1,0 +1,81 @@
+.486
+.model flat, stdcall
+option casemap :none
+include C:\masm32\include\windows.inc
+include C:\masm32\macros\macros.asm
+include C:\masm32\include\masm32.inc
+include C:\masm32\include\gdi32.inc
+include C:\masm32\include\user32.inc
+include C:\masm32\include\kernel32.inc
+includelib C:\masm32\lib\masm32.lib
+includelib C:\masm32\lib\gdi32.lib
+includelib C:\masm32\lib\user32.lib
+includelib C:\masm32\lib\kernel32.lib
+.code
+
+start:
+	push eax
+	call ____main
+	exit
+
+
+__mod proc
+	push ebp
+	mov ebp, esp
+	sub esp, 12
+	push ebx
+	push esi
+	push edi
+	mov eax, [ebp+20]
+	mov ecx, [ebp+16]
+	mov edx, 0
+	idiv ecx
+	mov [ebp-4], eax
+	mov eax, [ebp-4]
+	mov edx, [ebp+16]
+	imul edx
+	mov [ebp-8], eax
+	mov eax, [ebp+20]
+	sub eax, [ebp-8]
+	mov [ebp-12], eax
+	mov eax, [ebp-12]
+	mov [ebp+8], eax
+	mov eax, [ebp+8]
+	pop edi
+	pop esi
+	pop ebx
+	add esp, 12
+	pop ebp
+	ret
+__mod endp
+
+
+____main proc
+	push ebp
+	mov ebp, esp
+	sub esp, 12
+	push ebx
+	push esi
+	push edi
+	mov [ebp-4], sval(input())
+	mov [ebp-8], sval(input())
+	mov eax, [ebp-4]
+	push eax
+	mov eax, [ebp-8]
+	push eax
+	push ebp
+	push eax
+	call __mod
+	add esp, 16
+	mov [ebp-12], eax
+	print str$([ebp-12])
+	mov eax, [ebp+8]
+	pop edi
+	pop esi
+	pop ebx
+	add esp, 12
+	pop ebp
+	ret
+____main endp
+
+end start

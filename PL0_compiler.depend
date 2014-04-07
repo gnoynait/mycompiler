@@ -1,0 +1,61 @@
+# depslib dependency file v1.0
+1321793385 source:/mnt/D/homework/ç¼–è¯‘/PL0_compiler/log.c
+	"global.h"
+	"log.h"
+
+1321796544 /mnt/D/homework/ç¼–è¯‘/PL0_compiler/global.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
+1321796361 /mnt/D/homework/ç¼–è¯‘/PL0_compiler/log.h
+
+1321778707 source:/mnt/D/homework/ç¼–è¯‘/PL0_compiler/main.c
+	"global.h"
+
+1321796110 source:/mnt/D/homework/ç¼–è¯‘/PL0_compiler/scan.c
+	"global.h"
+	"scan.h"
+	"table.h"
+	"log.h"
+
+1321796068 /mnt/D/homework/ç¼–è¯‘/PL0_compiler/scan.h
+	"global.h"
+
+1321796182 /mnt/D/homework/ç¼–è¯‘/PL0_compiler/table.h
+	"global.h"
+
+1323257655 source:d:\homework\±àÒë\pl0_compiler\main.c
+	"global.h"
+	"scan.h"
+	"table.h"
+
+1323255766 d:\homework\±àÒë\pl0_compiler\global.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
+1323256632 source:d:\homework\±àÒë\pl0_compiler\scan.c
+	"global.h"
+	"scan.h"
+	"table.h"
+	"log.h"
+
+1323251393 d:\homework\±àÒë\pl0_compiler\scan.h
+	"global.h"
+
+1323256787 d:\homework\±àÒë\pl0_compiler\table.h
+	"global.h"
+
+1323242524 d:\homework\±àÒë\pl0_compiler\log.h
+
+1323252935 source:d:\homework\±àÒë\pl0_compiler\table.c
+	"table.h"
+	"log.h"
+
+1323255722 source:d:\homework\±àÒë\pl0_compiler\log.c
+	"global.h"
+	"log.h"
+

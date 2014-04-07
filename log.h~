@@ -1,0 +1,8 @@
+#ifndef LOG_H_INCLUDE
+#define LOG_H_INCLUDE
+/*输出信息到文件上和屏幕上*/
+extern int info(char *str);
+
+
+
+#endif //LOG_H_INCLUDE

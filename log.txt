@@ -1,0 +1,22 @@
+const 
+	a = 45 , b = 27 ;
+var 
+	x , y , g , m , n , i , j , k :integer ;
+	list : array [10] of integer ;
+	c1 , c2 : char ;
+
+begin
+	for i := 1 to 3 do 
+	begin
+		read( c1 , c2 ) ;
+		x := c1 ;
+		y := c2 ;
+		write( " the first charater is " , c1 ) ;
+		write( " ths acii of c1 is " , x ) ;
+		write( " the second charater is " , c2 ) ;
+		write( " the acii of c2 is " , y ) ;
+		m := 5 ;
+		n := 4 ;
+		write( ( x + y / 5 + m - n ) * c1 - c2 ) ; 
+类型不一致类型不一致	end;
+end.

@@ -1,0 +1,17 @@
+﻿Build started 2011/12/29 23:22:20.
+     1>Project "D:\homework\编译\mycompiler\mycompiler.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\mycompiler.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+         mycompiler.vcxproj -> D:\homework\编译\mycompiler\Debug\mycompiler.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\mycompiler.unsuccessfulbuild".
+         Touching "Debug\mycompiler.lastbuildstate".
+     1>Done Building Project "D:\homework\编译\mycompiler\mycompiler.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.08
