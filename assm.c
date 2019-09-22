@@ -19,9 +19,9 @@ static char * register_name[8] = {
 	"EAX", "EBX", "ECX", "EDX", "EDI", "ESI", "EBP", "ESP"};
 
 static struct code optim_code[CODE_TABLE_SIZE];
-static int optim_code_end = 0;//°üÀ¨
-basic_block_start = 0;//°üÀ¨
-basic_block_end = 0;//²»°üÀ¨
+static int optim_code_end = 0;//åŒ…æ‹¬
+basic_block_start = 0;//åŒ…æ‹¬
+basic_block_end = 0;//ä¸åŒ…æ‹¬
 int address_rank[100];
 int next_block();
 void rank_address(int start, int end);
@@ -54,8 +54,8 @@ start:\n\
 	exit\n\n");
 }
 /**
-*·­ÒëÖĞ¼ä´úÂë
-*´Ó0µ½end,°üÀ¨end
+*ç¿»è¯‘ä¸­é—´ä»£ç 
+*ä»0åˆ°end,åŒ…æ‹¬end
 */
 void gen_assm(int end){
 	int i;
@@ -82,7 +82,7 @@ void gen_assm(int end){
 	}
 
 }
-//·µ»ØaddrÔÚ»ã±àÖĞµÄ×Ö·û´®
+//è¿”å›addråœ¨æ±‡ç¼–ä¸­çš„å­—ç¬¦ä¸²
 char * str_addr(struct address addr){
 	int idx;
 	int l;
@@ -184,13 +184,13 @@ void translate(struct code ir_code){
 	neg eax\n\
 	mov %s, eax\n",str_addr(ir_code.x),str_addr(ir_code.z));
 		break;
-	case INC_INS: //	¼Ó1	z++
+	case INC_INS: //	åŠ 1	z++
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	inc eax\n\
 	mov %s, eax\n",str_addr(ir_code.z),str_addr(ir_code.z));
 		break;
-	case DEC_INS:	//	¼õ1	z--
+	case DEC_INS:	//	å‡1	z--
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	dec eax\n\
@@ -199,50 +199,50 @@ void translate(struct code ir_code){
 		break;
 	//ARRAY_INS,	//	z=x[y]
 
-	case ASSIGN_INS:	//	¸³Öµz=x
+	case ASSIGN_INS:	//	èµ‹å€¼z=x
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	mov %s, eax\n",str_addr(ir_code.x),str_addr(ir_code.z));
 		break;
-	//CMP_INS,	//	±È½Ï	flag = z-0
-	case LABEL_INS:	//	±êÇ©	lable z
+	//CMP_INS,	//	æ¯”è¾ƒ	flag = z-0
+	case LABEL_INS:	//	æ ‡ç­¾	lable z
 		fprintf(assm_file, "label%d:\n", ir_code.z.pointer);
 		break;
-	case JMP_INS:	//	ÎŞÌõ¼şÌø×ª	goto z
+	case JMP_INS:	//	æ— æ¡ä»¶è·³è½¬	goto z
 		fprintf(assm_file, "\
 	jmp label%d\n",ir_code.z.pointer);
 		break;
-	case JMPE_INS:	//	ÏàµÈÌø×ª	if x=y goto z
+	case JMPE_INS:	//	ç›¸ç­‰è·³è½¬	if x=y goto z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	cmp eax, %s\n\
 	je label%d\n",str_addr(ir_code.x),str_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPNE_INS:	//	²»ÏàµÈÌø×ª	if x <> y goto z
+	case JMPNE_INS:	//	ä¸ç›¸ç­‰è·³è½¬	if x <> y goto z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	cmp eax, %s\n\
 	jne label%d\n",str_addr(ir_code.x),str_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPL_INS:	//	Ğ¡ÓÚÌø×ª		if x < y goto z
+	case JMPL_INS:	//	å°äºè·³è½¬		if x < y goto z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	cmp eax, %s\n\
 	jl label%d\n",str_addr(ir_code.x),str_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPNL_INS:	//	´óÓÚµÈÓÚÌø×ª if x >= y goto z
+	case JMPNL_INS:	//	å¤§äºç­‰äºè·³è½¬ if x >= y goto z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	cmp eax, %s\n\
 	jge label%d\n",str_addr(ir_code.x),str_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPG_INS:	//	´óÓÚÌø×ª		if x > y goto z
+	case JMPG_INS:	//	å¤§äºè·³è½¬		if x > y goto z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	cmp eax, %s\n\
 	jg label%d\n",str_addr(ir_code.x),str_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPNG_INS:	//	Ğ¡ÓÚµÈÓÚÌø×ª	if x <= y goto z
+	case JMPNG_INS:	//	å°äºç­‰äºè·³è½¬	if x <= y goto z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	cmp eax, %s\n\
@@ -252,18 +252,18 @@ void translate(struct code ir_code){
 	//ELSE_INS,	//	.else
 	//ENDIF_INS,	//	.endif
 	
-	case VAR_PARA_INS:	//±äÁ¿²ÎÊı		z
+	case VAR_PARA_INS:	//å˜é‡å‚æ•°		z
 		fprintf(assm_file, "\
 	lea eax, %s\n\
 	push eax\n",str_addr(ir_code.z));
 		break;//do nothing.
-	case VALUE_PARA_INS:	//Öµ²ÎÊı		z
+	case VALUE_PARA_INS:	//å€¼å‚æ•°		z
 		fprintf(assm_file, "\
 	mov eax, %s\n\
 	push eax\n",str_addr(ir_code.z));
 		break;
-	case CALL_INS:	//	µ÷ÓÃ¹ı³Ìº¯Êı	z ¹ı³ÌµØÖ·
-		if(block_level == identifier_level(ir_code.x.pointer)){//¹ı³Ìº¯ÊıµÄlevel±ÈÆäÄÚÈİlevelĞ¡1
+	case CALL_INS:	//	è°ƒç”¨è¿‡ç¨‹å‡½æ•°	z è¿‡ç¨‹åœ°å€
+		if(block_level == identifier_level(ir_code.x.pointer)){//è¿‡ç¨‹å‡½æ•°çš„levelæ¯”å…¶å†…å®¹levelå°1
 			fprintf(assm_file, "\
 	push ebp\n");
 			for(i = identifier_level(ir_code.x.pointer) - 1; i > 0 ; i--){
@@ -282,9 +282,9 @@ void translate(struct code ir_code){
 	push eax\n\
 	call __%s\n\
 	add esp, %d\n\
-	mov %s, eax\n",identifier_name(ir_code.x.pointer),(1+identifier_value(ir_code.x.pointer)+identifier_level(ir_code.x.pointer))*4/*ÏûÈ¥·µ»ØÖµ£¬displayÇø£¬²ÎÊı*/, str_addr(ir_code.z));
+	mov %s, eax\n",identifier_name(ir_code.x.pointer),(1+identifier_value(ir_code.x.pointer)+identifier_level(ir_code.x.pointer))*4/*æ¶ˆå»è¿”å›å€¼ï¼ŒdisplayåŒºï¼Œå‚æ•°*/, str_addr(ir_code.z));
 		break;
-	case RET_INS:	//	¹ı³Ìº¯Êı·µ»Ø	z
+	case RET_INS:	//	è¿‡ç¨‹å‡½æ•°è¿”å›	z
 		fprintf(assm_file, "\
 	mov eax, [ebp+8]\n\
 	pop edi\n\
@@ -295,35 +295,35 @@ void translate(struct code ir_code){
 	ret\n\
 __%s endp\n\n",block_size * 4,identifier_name(block_idx));
 		break;
-	case READC_INS:	//	¶ÁÈë×Ö·û		char->z
+	case READC_INS:	//	è¯»å…¥å­—ç¬¦		char->z
 		fprintf(assm_file, "\
 	invoke crt_scanf, SADD(\"%%c\"), addr %s\n", str_addr(ir_code.z));	
 		break;
-	/*case READL_INS:	//	¶ÁÈë»»ĞĞ×Ö·û
+	/*case READL_INS:	//	è¯»å…¥æ¢è¡Œå­—ç¬¦
 		fprintf(assm_file, "\
 	invoke crt_scanf, SADD(\"%%c\"), addr 0\n");
 		break;*/
-	case READI_INS://	¶ÁÈëÕûÊı		int->z
+	case READI_INS://	è¯»å…¥æ•´æ•°		int->z
 		fprintf(assm_file, "\
 	invoke crt_scanf, SADD(\"%%d\"), addr %s\n", str_addr(ir_code.z));
 		break;
-	case WRITEC_INS:	//	Ğ´×Ö·û			out << z
+	case WRITEC_INS:	//	å†™å­—ç¬¦			out << z
 		fprintf(assm_file, "\
 	invoke crt_printf, SADD(\"%%c \"), dword ptr %s\n", str_addr(ir_code.z));
 		break;
-	case WRITEI_INS:	//	Ğ´ÕûÊı			out << z
+	case WRITEI_INS:	//	å†™æ•´æ•°			out << z
 		fprintf(assm_file, "\
 	invoke crt_printf, SADD(\"%%d \"), dword ptr %s\n", str_addr(ir_code.z));
 		break;
-	case WRITES_INS:	//	Ğ´×Ö·û´®		out	<< z
+	case WRITES_INS:	//	å†™å­—ç¬¦ä¸²		out	<< z
 		fprintf(assm_file, "\
 	print chr$(\"%s\")\n", str_addr(ir_code.z));
 		break;
-	case WRITEL_INS:	//	Ğ´×Ö·û´®		out	<< z
+	case WRITEL_INS:	//	å†™å­—ç¬¦ä¸²		out	<< z
 		fprintf(assm_file, "\
 	print chr$(10)\n", str_addr(ir_code.z));
 		break;
-	case BLOCK_INS://½øÈë×Ó³ÌĞò
+	case BLOCK_INS://è¿›å…¥å­ç¨‹åº
 		fprintf(assm_file, "\n\
 __%s proc\n\
 	push ebp\n\
@@ -331,15 +331,15 @@ __%s proc\n\
 	sub esp, %d\n\
 	push ebx\n\
 	push esi\n\
-	push edi\n", identifier_name(block_idx), block_size * 4);//block_sizeÊÇÄÚ²¿¿Õ¼ä´óĞ¡
+	push edi\n", identifier_name(block_idx), block_size * 4);//block_sizeæ˜¯å†…éƒ¨ç©ºé—´å¤§å°
 		break;
-	case ERROR_INS:		//ÎŞ²Ù×÷£¬³ö´í
+	case ERROR_INS:		//æ— æ“ä½œï¼Œå‡ºé”™
 		break;
 	default:
 		break;
 		}
-	//ADDR_INS,		//È¡µØÖ· È¡ x[y]µÄµØÖ·´æµ½z
-	//STORE_INS		//½«x µÄÄÚÈİ´æµ½µØÖ·z
+	//ADDR_INS,		//å–åœ°å€ å– x[y]çš„åœ°å€å­˜åˆ°z
+	//STORE_INS		//å°†x çš„å†…å®¹å­˜åˆ°åœ°å€z
 }
 
 void assm_over(){
@@ -606,13 +606,13 @@ void optim_translate(struct code ir_code){
 	neg %s\n",register_name[reg]);
 		register_pool[reg] = ir_code.z;
 		break;
-	case INC_INS: //	¼Ó1	z++
+	case INC_INS: //	åŠ 1	z++
 		reg = load_on(ir_code.z, NO_REG);
 		fprintf(assm_file, "\
 	inc %s\n", register_name[reg]);
 		register_pool[reg] = ir_code.z;
 		break;
-	case DEC_INS:	//	¼õ1	z--
+	case DEC_INS:	//	å‡1	z--
 		reg = load_on(ir_code.z, NO_REG);
 		fprintf(assm_file, "\
 	dec %s\n", register_name[reg]);
@@ -620,68 +620,68 @@ void optim_translate(struct code ir_code){
 		break;
 	//ARRAY_INS,	//	z=x[y]
 
-	case ASSIGN_INS:	//	¸³Öµz=x
+	case ASSIGN_INS:	//	èµ‹å€¼z=x
 		reg = load_on(ir_code.x, NO_REG);
 		register_pool[reg] = ir_code.z;
 		break;
-	//CMP_INS,	//	±È½Ï	flag = z-0
-	case LABEL_INS:	//	±êÇ©	lable z
+	//CMP_INS,	//	æ¯”è¾ƒ	flag = z-0
+	case LABEL_INS:	//	æ ‡ç­¾	lable z
 		fprintf(assm_file, "label%d:\n", ir_code.z.pointer);
 		break;
-	case JMP_INS:	//	ÎŞÌõ¼şÌø×ª	goto z
+	case JMP_INS:	//	æ— æ¡ä»¶è·³è½¬	goto z
 		fprintf(assm_file, "\
 	jmp label%d\n",ir_code.z.pointer);
 		break;
-	case JMPE_INS:	//	ÏàµÈÌø×ª	if x=y goto z
+	case JMPE_INS:	//	ç›¸ç­‰è·³è½¬	if x=y goto z
 		reg = load_on(ir_code.x, NO_REG);
 		fprintf(assm_file, "\
 	cmp %s, %s\n\
 	je label%d\n",register_name[reg], optim_addr(ir_code.y), ir_code.z.pointer);
 		break;
-	case JMPNE_INS:	//	²»ÏàµÈÌø×ª	if x <> y goto z
+	case JMPNE_INS:	//	ä¸ç›¸ç­‰è·³è½¬	if x <> y goto z
 		reg = load_on(ir_code.x, NO_REG);
 		fprintf(assm_file, "\
 	cmp %s, %s\n\
 	jne label%d\n",register_name[reg], optim_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPL_INS:	//	Ğ¡ÓÚÌø×ª		if x < y goto z
+	case JMPL_INS:	//	å°äºè·³è½¬		if x < y goto z
 		reg = load_on(ir_code.x, NO_REG);
 		fprintf(assm_file, "\
 	cmp %s, %s\n\
 	jl label%d\n",register_name[reg], optim_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPNL_INS:	//	´óÓÚµÈÓÚÌø×ª if x >= y goto z
+	case JMPNL_INS:	//	å¤§äºç­‰äºè·³è½¬ if x >= y goto z
 		reg = load_on(ir_code.x, NO_REG);
 		fprintf(assm_file, "\
 	cmp %s, %s\n\
 	jge label%d\n",register_name[reg], optim_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPG_INS:	//	´óÓÚÌø×ª		if x > y goto z
+	case JMPG_INS:	//	å¤§äºè·³è½¬		if x > y goto z
 		reg = load_on( ir_code.x, NO_REG);
 		fprintf(assm_file, "\
 	cmp %s, %s\n\
 	jg label%d\n",register_name[reg], optim_addr(ir_code.y),ir_code.z.pointer);
 		break;
-	case JMPNG_INS:	//	Ğ¡ÓÚµÈÓÚÌø×ª	if x <= y goto z
+	case JMPNG_INS:	//	å°äºç­‰äºè·³è½¬	if x <= y goto z
 		reg = load_on(ir_code.x, NO_REG);
 		fprintf(assm_file, "\
 	cmp %s, %s\n\
 	jle label%d\n",register_name[reg], optim_addr(ir_code.y),ir_code.z.pointer);
 		break;
 	
-	case VAR_PARA_INS:	//±äÁ¿²ÎÊı		z
+	case VAR_PARA_INS:	//å˜é‡å‚æ•°		z
 		reg = move_down_one(EAX);
 		fprintf(assm_file, "\
 	lea %s, %s\n\
 	push %s\n", register_name[reg]);
 		break;//do nothing.
-	case VALUE_PARA_INS:	//Öµ²ÎÊı		z
+	case VALUE_PARA_INS:	//å€¼å‚æ•°		z
 		reg = load_on(ir_code.z, NO_REG);
 		fprintf(assm_file, "\
 	push %s\n",register_name[reg]);
 		break;
-	case CALL_INS:	//	µ÷ÓÃ¹ı³Ìº¯Êı	z ¹ı³ÌµØÖ·
-		if(block_level == identifier_level(ir_code.x.pointer)){//¹ı³Ìº¯ÊıµÄlevel±ÈÆäÄÚÈİlevelĞ¡1
+	case CALL_INS:	//	è°ƒç”¨è¿‡ç¨‹å‡½æ•°	z è¿‡ç¨‹åœ°å€
+		if(block_level == identifier_level(ir_code.x.pointer)){//è¿‡ç¨‹å‡½æ•°çš„levelæ¯”å…¶å†…å®¹levelå°1
 			fprintf(assm_file, "\
 	push ebp\n");
 			for(i = identifier_level(ir_code.x.pointer) - 1; i > 0 ; i--){
@@ -700,9 +700,9 @@ void optim_translate(struct code ir_code){
 	push eax\n\
 	call __%s\n\
 	add esp, %d\n\
-	mov %s, eax\n",identifier_name(ir_code.x.pointer),(1+identifier_value(ir_code.x.pointer)+identifier_level(ir_code.x.pointer))*4/*ÏûÈ¥·µ»ØÖµ£¬displayÇø£¬²ÎÊı*/, str_addr(ir_code.z));
+	mov %s, eax\n",identifier_name(ir_code.x.pointer),(1+identifier_value(ir_code.x.pointer)+identifier_level(ir_code.x.pointer))*4/*æ¶ˆå»è¿”å›å€¼ï¼ŒdisplayåŒºï¼Œå‚æ•°*/, str_addr(ir_code.z));
 		break;
-	case RET_INS:	//	¹ı³Ìº¯Êı·µ»Ø	z
+	case RET_INS:	//	è¿‡ç¨‹å‡½æ•°è¿”å›	z
 		fprintf(assm_file, "\
 	mov eax, [ebp+8]\n\
 	popa\n\
@@ -711,43 +711,43 @@ void optim_translate(struct code ir_code){
 	ret\n\
 __%s endp\n\n",block_size * 4,identifier_name(block_idx));
 		break;
-	case READC_INS:	//	¶ÁÈë×Ö·û		char->z
+	case READC_INS:	//	è¯»å…¥å­—ç¬¦		char->z
 		fprintf(assm_file, "\
 	invoke crt_scanf, SADD(\"%%c\"), addr %s\n", optim_addr(ir_code.z));	
 		break;
-	/*case READL_INS:	//	¶ÁÈë»»ĞĞ×Ö·û
+	/*case READL_INS:	//	è¯»å…¥æ¢è¡Œå­—ç¬¦
 		fprintf(assm_file, "\
 	invoke crt_scanf, SADD(\"%%c\"), addr 0\n");
 		break;*/
-	case READI_INS://	¶ÁÈëÕûÊı		int->z
+	case READI_INS://	è¯»å…¥æ•´æ•°		int->z
 		fprintf(assm_file, "\
 	invoke crt_scanf, SADD(\"%%d\"), addr %s\n", optim_addr(ir_code.z));
 		break;
-	case WRITEC_INS:	//	Ğ´×Ö·û			out << z
+	case WRITEC_INS:	//	å†™å­—ç¬¦			out << z
 		fprintf(assm_file, "\
 	invoke crt_printf, SADD(\"%%c \"), dword ptr %s\n", optim_addr(ir_code.z));
 		break;
-	case WRITEI_INS:	//	Ğ´ÕûÊı			out << z
+	case WRITEI_INS:	//	å†™æ•´æ•°			out << z
 		fprintf(assm_file, "\
 	invoke crt_printf, SADD(\"%%d \"), dword ptr %s\n", optim_addr(ir_code.z));
 		break;
-	case WRITES_INS:	//	Ğ´×Ö·û´®		out	<< z
+	case WRITES_INS:	//	å†™å­—ç¬¦ä¸²		out	<< z
 		fprintf(assm_file, "\
 	print chr$(\"%s\")\n", optim_addr(ir_code.z));
 		break;
-	case WRITEL_INS:	//	Ğ´×Ö·û´®		out	<< z
+	case WRITEL_INS:	//	å†™å­—ç¬¦ä¸²		out	<< z
 		fprintf(assm_file, "\
 	print chr$(10)\n", optim_addr(ir_code.z));
 		break;
-	case BLOCK_INS://½øÈë×Ó³ÌĞò
+	case BLOCK_INS://è¿›å…¥å­ç¨‹åº
 		fprintf(assm_file, "\n\
 __%s proc\n\
 	push ebp\n\
 	mov ebp, esp\n\
 	sub esp, %d\n\
-	pusha\n", identifier_name(block_idx), block_size * 4);//block_sizeÊÇÄÚ²¿¿Õ¼ä´óĞ¡
+	pusha\n", identifier_name(block_idx), block_size * 4);//block_sizeæ˜¯å†…éƒ¨ç©ºé—´å¤§å°
 		break;
-	case ERROR_INS:		//ÎŞ²Ù×÷£¬³ö´í
+	case ERROR_INS:		//æ— æ“ä½œï¼Œå‡ºé”™
 		break;
 	default:
 		break;

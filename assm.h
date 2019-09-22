@@ -5,8 +5,8 @@
 #include"table.h"
 
 extern void init_assm(FILE * code_file, int is_opt);
-//´Ócode_tableÖĞµÄstart¿ªÊ¼µ½end½áÊø£¬
-//¶ÔÃ¿Ò»ĞĞÉú³É»ã±à´úÂë
+//ä»code_tableä¸­çš„startå¼€å§‹åˆ°endç»“æŸï¼Œ
+//å¯¹æ¯ä¸€è¡Œç”Ÿæˆæ±‡ç¼–ä»£ç 
 extern void gen_assm(int end);
 extern void assm_over();
 /***************************/

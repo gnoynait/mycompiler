@@ -3,7 +3,7 @@
 #include"global.h"
 
 extern int open_sourcefile(char * filename);
-extern char identifier[ID_SIZE];    /* µ±Ç°ident, ¶à³öµÄÒ»¸ö×Ö½ÚÓÃÓÚ´æ·Å0 */
+extern char identifier[ID_SIZE];    /* å½“å‰ident, å¤šå‡ºçš„ä¸€ä¸ªå­—èŠ‚ç”¨äºå­˜æ”¾0 */
 //extern char ch;
 extern enum symbol_type symbol;
 extern int num;

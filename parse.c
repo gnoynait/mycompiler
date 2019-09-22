@@ -4,9 +4,9 @@
 #include"util.h"
 #include"table.h"
 #include"assm.h"
-int function_index;//º¯ÊıµÄ·ûºÅ±íÏÂ±ê£¬Èç¹ûÎª0£¬ ±íÊ¾²»ÊÇº¯Êı,Èç¹ûÔÚÒ»¸ö×Ó³ÌĞòÖĞº¯ÊıÃû±»¸³Öµ£¬ÔòÖÃÎª0
+int function_index;//å‡½æ•°çš„ç¬¦å·è¡¨ä¸‹æ ‡ï¼Œå¦‚æœä¸º0ï¼Œ è¡¨ç¤ºä¸æ˜¯å‡½æ•°,å¦‚æœåœ¨ä¸€ä¸ªå­ç¨‹åºä¸­å‡½æ•°åè¢«èµ‹å€¼ï¼Œåˆ™ç½®ä¸º0
 
-//ÓÃÓÚÖĞ¼ä´úÂëµÄ¿ÕµØÖ·
+//ç”¨äºä¸­é—´ä»£ç çš„ç©ºåœ°å€
 const struct address empty_address = { EMPTY_ADDR, 0};
 
 void skip_to(set_type s){
@@ -26,14 +26,14 @@ void skip_to(set_type s){
 	free(s2);
 }*/
 
-//½âÎö³£Á¿£¬³É¹¦Ôò·µ»ØÆäÖµ£¬·ñÔò·µ»Ø0
+//è§£æå¸¸é‡ï¼ŒæˆåŠŸåˆ™è¿”å›å…¶å€¼ï¼Œå¦åˆ™è¿”å›0
 int parse_const(){
 	set_type s;
 	int sign = 1;
 	s = new_set();
 	add_set(s, const_first);
 	if(!in_set(symbol, s)){
-		info(lineno, "³£Á¿¶¨Òå´íÎó");
+		info(lineno, "å¸¸é‡å®šä¹‰é”™è¯¯");
 		add_set(s, factor_first);
 		add_set(s, block_first);
 		skip_to(s);
@@ -51,7 +51,7 @@ int parse_const(){
 		return sign * num;
 	}
 	else{
-		//info(lineno, "³£Á¿¶¨Òå´íÎó");
+		//info(lineno, "å¸¸é‡å®šä¹‰é”™è¯¯");
 		skip_to(s);
 	}	
 	free(s);
@@ -68,17 +68,17 @@ static enum type_type get_type(struct address a){
 	case ARRAY_ELEMENT_ADDR:
 		return get_type(get_array_addr(a.pointer));
 	default:
-		info(lineno, "ÀàĞÍÆ¥Åä´íÎó");
+		info(lineno, "ç±»å‹åŒ¹é…é”™è¯¯");
 		return INT_TYPE;
 	}
 }
-//±È½ÏÁ½¸öÊÇ·ñ¾ßÓĞÏàÍ¬µÄÀàĞÍ£¬·µ»Ø½á¹ûÀàĞÍ£¬²»Í¬Ôò±¨´í
+//æ¯”è¾ƒä¸¤ä¸ªæ˜¯å¦å…·æœ‰ç›¸åŒçš„ç±»å‹ï¼Œè¿”å›ç»“æœç±»å‹ï¼Œä¸åŒåˆ™æŠ¥é”™
 enum type_type match_type(struct address a, struct address b){
 	enum type_type at, bt;
 	at = get_type(a);
 	bt = get_type(b);
 	if(at != bt){
-		info(lineno, "ÀàĞÍ²»Ò»ÖÂ");
+		info(lineno, "ç±»å‹ä¸ä¸€è‡´");
 		return INT_TYPE;
 	}
 	return at;
@@ -94,10 +94,10 @@ struct address parse_array_element(){
 
 	ident_idx = find_identifier(identifier);
 	if(ident_idx == 0){
-		info(lineno, "±äÁ¿Î´¶¨Òå");
+		info(lineno, "å˜é‡æœªå®šä¹‰");
 	}
 	else if(identifier_object(ident_idx) != ARRAY){
-		info(lineno, "±êÊ¶·û²»ÊÇÊı×é");
+		info(lineno, "æ ‡è¯†ç¬¦ä¸æ˜¯æ•°ç»„");
 	}
 	type = identifier_type(ident_idx);
 	array_name.pointer = ident_idx;
@@ -105,7 +105,7 @@ struct address parse_array_element(){
 
 	next_sym();
 	if(symbol != LSQUARE_SYM){
-		info(lineno, "Êı×éÒıÓÃÈ±ÉÙ[");
+		info(lineno, "æ•°ç»„å¼•ç”¨ç¼ºå°‘[");
 		s = new_set();
 		add_set(s, factor_first);
 		insert_set(s, RSQUARE_SYM);
@@ -119,7 +119,7 @@ struct address parse_array_element(){
 	array_index = parse_expression();
 
 	if(symbol != RSQUARE_SYM){
-		info(lineno, "Êı×éÒıÓÃÈ±ÉÙ]");
+		info(lineno, "æ•°ç»„å¼•ç”¨ç¼ºå°‘]");
 	}
 	else 
 		next_sym();
@@ -127,7 +127,7 @@ struct address parse_array_element(){
 }
 
 
-/*	½âÎö¹ı³Ìº¯Êıµ÷ÓÃÊ±Ê±Êµ¼Ê²ÎÊı±í	*/
+/*	è§£æè¿‡ç¨‹å‡½æ•°è°ƒç”¨æ—¶æ—¶å®é™…å‚æ•°è¡¨	*/
 void parse_real_paralist(int function_idx){
 	int para_count = 0;
 	int pidx;
@@ -138,11 +138,11 @@ void parse_real_paralist(int function_idx){
 		
 		pidx = find_identifier(identifier);
 		if(pidx == 0){
-			info(lineno, "²ÎÊıÎ´¶¨Òå");
+			info(lineno, "å‚æ•°æœªå®šä¹‰");
 		}
 		/*if(identifier_object(function_idx + para_count) == VAR_PARA){
 			if(identifier_object(pidx) != VARIABLE){
-				info(lineno, "±äÁ¿²ÎÊı´«µİÓĞÎó£¬Öµ²»ÄÜ´«¸øvar ²ÎÊı");
+				info(lineno, "å˜é‡å‚æ•°ä¼ é€’æœ‰è¯¯ï¼Œå€¼ä¸èƒ½ä¼ ç»™var å‚æ•°");
 			}
 			
 		}*/
@@ -151,17 +151,17 @@ void parse_real_paralist(int function_idx){
 		/*if((identifier_object(function_idx + para_count) == VAR_PARA) &&
 			!((paddr.pointer == pidx) && (paddr.type == VAR_ADDR))){
 				if(identifier_object(pidx) != ARRAY)
-					info(lineno, "²ÎÊı´«µİ´íÎó£º·Ç±äÁ¿²»ÄÜ´«¸øVAR²ÎÊı");
+					info(lineno, "å‚æ•°ä¼ é€’é”™è¯¯ï¼šéå˜é‡ä¸èƒ½ä¼ ç»™VARå‚æ•°");
 		}
 		else */if(identifier_type(pidx) != get_type(paddr))
-			info(lineno, "²ÎÊıÀàĞÍÆ¥Åä´íÎó");
+			info(lineno, "å‚æ•°ç±»å‹åŒ¹é…é”™è¯¯");
 		if(identifier_object(function_idx + para_count) == VAR_PARA){
 			gen_code(VAR_PARA_INS, empty_address, empty_address, paddr);
 		}else
 			gen_code(VALUE_PARA_INS, empty_address, empty_address, paddr);
 
 		if(symbol == SEMICOLON_SYM){
-			info(lineno, "²ÎÊıÓ¦ÒÔ\'£¬\'·Ö¸ô");
+			info(lineno, "å‚æ•°åº”ä»¥\'ï¼Œ\'åˆ†éš”");
 			next_sym();
 		}
 		else if(symbol == COMMA_SYM)
@@ -170,7 +170,7 @@ void parse_real_paralist(int function_idx){
 	}
 
 	if(para_count != para_num)
-		info(lineno, "²ÎÊıÊıÄ¿´íÎó");
+		info(lineno, "å‚æ•°æ•°ç›®é”™è¯¯");
 	//next_sym();
 }
 
@@ -179,30 +179,30 @@ struct address parse_call_statement(){
 	int i;
 	i = find_identifier(identifier);
 	if(i == 0){
-		info(lineno, "º¯Êı¹ı³ÌÎ´¶¨Òå");
+		info(lineno, "å‡½æ•°è¿‡ç¨‹æœªå®šä¹‰");
 	}
 	/*if(identifier_object(i) == PROCEDURE){
-		info(lineno, "¹ı³Ì²»ÄÜ×öÎªÒò×Ó");
+		info(lineno, "è¿‡ç¨‹ä¸èƒ½åšä¸ºå› å­");
 	}
 	else 
 	if(identifier_object(i) != FUNCTION){
-		info(lineno, "º¯Êı¹ı³Ìµ÷ÓÃ³ö´í");
+		info(lineno, "å‡½æ•°è¿‡ç¨‹è°ƒç”¨å‡ºé”™");
 	}*/
 	if(identifier_object(i) != FUNCTION && identifier_object(i) != PROCEDURE){
-		info(lineno,"º¯Êı¹ı³Ìµ÷ÓÃ³ö´í,±êÊ¶·û²»ÊÇº¯ÊıºÍ¹ı³Ì");
+		info(lineno,"å‡½æ•°è¿‡ç¨‹è°ƒç”¨å‡ºé”™,æ ‡è¯†ç¬¦ä¸æ˜¯å‡½æ•°å’Œè¿‡ç¨‹");
 	}
 	x.type = VAR_ADDR;
 	x.pointer = i;
 	z = new_temp(identifier_type(i));
 	next_sym();
 	if(symbol != LROUND_SYM){
-		info(lineno, "º¯Êıµ÷ÓÃÈ±ÉÙ\'(\'");
+		info(lineno, "å‡½æ•°è°ƒç”¨ç¼ºå°‘\'(\'");
 	}
 	else 
 		next_sym();
 	parse_real_paralist(i);
 	if(symbol != RROUND_SYM){
-		info(lineno, "º¯Êıµ÷ÓÃÈ±ÉÙ\')\'");
+		info(lineno, "å‡½æ•°è°ƒç”¨ç¼ºå°‘\')\'");
 	}
 	else
 		next_sym();
@@ -212,11 +212,11 @@ struct address parse_call_statement(){
 
 
 
-//½âÎöÒò×Ó
+//è§£æå› å­
 struct address parse_factor(){
 	int ident_idx; 
 	set_type skip_end;
-	struct address addr = {VALUE_ADDR, 0};//³ö´íÊ±·µ»ØÖµ0
+	struct address addr = {VALUE_ADDR, 0};//å‡ºé”™æ—¶è¿”å›å€¼0
 	if(!in_set(symbol, factor_first)){
 		skip_end = new_set();
 		add_set(skip_end, factor_first);
@@ -233,7 +233,7 @@ struct address parse_factor(){
 		else if(symbol== IDENTIFIER_SYM){
 			ident_idx = find_identifier(identifier);
 			if(ident_idx == 0){
-				info(lineno, "±êÊ¶·ûÎ´¶¨Òå");
+				info(lineno, "æ ‡è¯†ç¬¦æœªå®šä¹‰");
 				next_sym();
 				skip_end = new_set();
 				add_set(skip_end, statement_first);
@@ -265,7 +265,7 @@ struct address parse_factor(){
 					addr = parse_call_statement();
 					break;
 				default://PROCEDURE
-					info(lineno, "Òò×ÓÖĞ²»ÄÜÓĞ¹ı³Ìµ÷ÓÃ");
+					info(lineno, "å› å­ä¸­ä¸èƒ½æœ‰è¿‡ç¨‹è°ƒç”¨");
 					addr = parse_call_statement();
 				}
 		}
@@ -274,13 +274,13 @@ struct address parse_factor(){
 			next_sym();
 			addr = parse_expression();
 			if(symbol != RROUND_SYM)
-				info(lineno, "À¨ºÅÆ¥Åä´íÎó");
+				info(lineno, "æ‹¬å·åŒ¹é…é”™è¯¯");
 			else
 				next_sym();
 		}
 
 		if(in_set(symbol, factor_first))
-			info(lineno, "Óï·¨´íÎó,ÏàÁÙÒò×Ó");
+			info(lineno, "è¯­æ³•é”™è¯¯,ç›¸ä¸´å› å­");
 	}
 	return addr;
 }
@@ -307,7 +307,7 @@ struct address parse_term(){
 	return x;
 }
 
-/* ÓÃÓÚ½âÎö±í´ïÊ½ */
+/* ç”¨äºè§£æè¡¨è¾¾å¼ */
 struct address parse_expression()
 {
 	struct address x, y, z;
@@ -353,21 +353,21 @@ struct address parse_expression()
 	array_addr.type = VAR_ADDR;
 	array_addr.pointer = ident_idx;
 	if(identifier_object(ident_idx) != ARRAY)
-		info(lineno, "²»ÊÇÊı×é");
+		info(lineno, "ä¸æ˜¯æ•°ç»„");
 	else
 		next_sym();
 	if(symbol != LSQUARE_SYM)
-		info(lineno, "Êı×éÒıÓÃÈ±ÉÙ\'[\'");
+		info(lineno, "æ•°ç»„å¼•ç”¨ç¼ºå°‘\'[\'");
 	else
 		next_sym();
 	index_addr = parse_expression();
 	if(symbol != RSQUARE_SYM)
-		info(lineno, "Êı×éÒıÓÃÈ±ÉÙ\']\'");
+		info(lineno, "æ•°ç»„å¼•ç”¨ç¼ºå°‘\']\'");
 	else
 		next_sym();
 	if(symbol != BECOMES_SYM){
 		if(symbol == EQL_SYM)
-			info(lineno, "¸³ÖµÓï¾äÓ¦Ê¹ÓÃ\':=\'");
+			info(lineno, "èµ‹å€¼è¯­å¥åº”ä½¿ç”¨\':=\'");
 		else
 			next_sym();
 	}
@@ -380,8 +380,8 @@ struct address parse_expression()
 }
 */
 
-//´¦Àí¸³ÖµÓï¾ä
-//dest_idxÊÇ±»¸³ÖµÓï¾äµÄ·ûºÅ±íË÷Òı
+//å¤„ç†èµ‹å€¼è¯­å¥
+//dest_idxæ˜¯è¢«èµ‹å€¼è¯­å¥çš„ç¬¦å·è¡¨ç´¢å¼•
 int parse_assign_statement( )
 {
 	struct address source, dest;
@@ -389,7 +389,7 @@ int parse_assign_statement( )
 	enum object_type type = VARIABLE;
 	ident_idx = find_identifier(identifier);
 	if(ident_idx == 0){
-		info(lineno, "±êÊ¶·ûÎ´¶¨Òå");
+		info(lineno, "æ ‡è¯†ç¬¦æœªå®šä¹‰");
 	}
 	else if(identifier_object(ident_idx) == ARRAY){
 		dest = parse_array_element();
@@ -402,10 +402,10 @@ int parse_assign_statement( )
 	if(symbol != BECOMES_SYM){		
 		if(symbol == EQL_SYM){
 			next_sym();
-			info(lineno, "¸³ÖµÓ¦Ê¹ÓÃ\':=\'");
+			info(lineno, "èµ‹å€¼åº”ä½¿ç”¨\':=\'");
 		}
 		else
-			info(lineno, "¸³ÖµÓï¾äÈ±ÉÙ:=");
+			info(lineno, "èµ‹å€¼è¯­å¥ç¼ºå°‘:=");
 	}
 	next_sym();
 	source = parse_expression();
@@ -420,31 +420,31 @@ void parse_read_statement()
 	struct address v;
 	enum type_type type;
 	if(symbol != READ_SYM)
-		info(lineno, "readÓï¾äÓ¦ÒÔread¿ªÍ·");
+		info(lineno, "readè¯­å¥åº”ä»¥readå¼€å¤´");
 	else
 		next_sym();
 	if(symbol != LROUND_SYM)
-		info(lineno, "readÈ±ÉÙ\'£¨\'");
+		info(lineno, "readç¼ºå°‘\'ï¼ˆ\'");
 	else
 		next_sym();
 	do{
 		if(symbol == COMMA_SYM)
 			next_sym();
 		if(symbol != IDENTIFIER_SYM){
-			info(lineno, "readÓï¾ä²ÎÊıÓ¦Îª±äÁ¿");
+			info(lineno, "readè¯­å¥å‚æ•°åº”ä¸ºå˜é‡");
 			continue;
 		}
 
 		id = find_identifier(identifier);
 		if(id == 0)
-			info(lineno, "±äÁ¿Î´¶¨Òå");
+			info(lineno, "å˜é‡æœªå®šä¹‰");
 		v.type = VAR_ADDR;
 		v.pointer = id;
 		if((identifier_object(id) != VARIABLE) && 
 			(identifier_object(id)  != VAR_PARA) &&
 			(identifier_object(id) != VALUE_PARA) &&
 			(identifier_object(id) != FUNCTION))
-			info(lineno, "¶ÁÓï¾äÓ¦µ±Îª±äÁ¿");
+			info(lineno, "è¯»è¯­å¥åº”å½“ä¸ºå˜é‡");
 		type = get_type(v);
 		if(type == CHAR_TYPE)
 			gen_code(READC_INS,empty_address, empty_address, v);
@@ -456,7 +456,7 @@ void parse_read_statement()
 	gen_code(READL_INS, empty_address, empty_address, empty_address);*/
 
 	if(symbol != RROUND_SYM)
-		info(lineno, "¶ÁÓï¾äÓ¦ÓĞ)");
+		info(lineno, "è¯»è¯­å¥åº”æœ‰)");
 	else
 		next_sym();
 }
@@ -466,16 +466,16 @@ void parse_write_statement()
 	int str_id;
 	struct address a, b;
 	if(symbol != WRITE_SYM)
-		info(lineno, "writeÓï¾äÈ±ÉÙwrite");
+		info(lineno, "writeè¯­å¥ç¼ºå°‘write");
 	else
 		next_sym();
 	if(symbol != LROUND_SYM){
-		info(lineno, "È±ÉÙ\'(\'");
+		info(lineno, "ç¼ºå°‘\'(\'");
 	}
 	else
 		next_sym();
 	if(symbol == RROUND_SYM)
-		info(lineno, "writeÓï¾äÖĞÃ»ÓĞÄÚÈİ");
+		info(lineno, "writeè¯­å¥ä¸­æ²¡æœ‰å†…å®¹");
 	else if(symbol == STR_CONST_SYM){
 		str_id = store_str(str_buffer);
 		a.type = STRING_ADDR;
@@ -502,7 +502,7 @@ void parse_write_statement()
 	}
 	gen_code(WRITEL_INS, empty_address, empty_address, empty_address);
 	if(symbol != RROUND_SYM){
-		info(lineno, "Ğ´Óï¾äÓ¦ÒÔ\')\'½áÊø");
+		info(lineno, "å†™è¯­å¥åº”ä»¥\')\'ç»“æŸ");
 	}
 	else
 		next_sym();
@@ -520,17 +520,17 @@ void parse_for_statement(){
 	l_start = new_label();
 	l_end = new_label();
 	if(symbol != FOR_SYM){
-		info(lineno, "forÓï¾äÓ¦ÒÔfor¿ªÍ·");
+		info(lineno, "forè¯­å¥åº”ä»¥forå¼€å¤´");
 	}
 	else
 		next_sym();
 	if(symbol != IDENTIFIER_SYM){
 		if(symbol == LROUND_SYM){
-			info(lineno, "forÓï¾äÖĞ²»Ó¦º¬ÓĞ\'(\'");
+			info(lineno, "forè¯­å¥ä¸­ä¸åº”å«æœ‰\'(\'");
 			next_sym();
 		}
 		/*else{
-			info(lineno, "forÓï¾äÖĞÑ­»·Òò×ÓÓ¦¸ÃÊÇ±äÁ¿");
+			info(lineno, "forè¯­å¥ä¸­å¾ªç¯å› å­åº”è¯¥æ˜¯å˜é‡");
 			s = new_set();
 			add_set(s, statement_first);
 			insert_set(s, TO_SYM);
@@ -542,7 +542,7 @@ void parse_for_statement(){
 	else{
 		id = find_identifier(identifier);
 		if(id == 0)
-			info(lineno, "±äÁ¿Î´¶¨Òå");
+			info(lineno, "å˜é‡æœªå®šä¹‰");
 		addr.type = VAR_ADDR;
 		addr.pointer = id;
 		type = identifier_type(id);
@@ -550,11 +550,11 @@ void parse_for_statement(){
 	}
 	if(symbol != BECOMES_SYM){
 		if(symbol == EQL_SYM){
-			info(lineno, "forÓï¾äÖĞÓ¦¸ÃÊÇ\':=\'¶ø²»ÊÇ\'=\'");
+			info(lineno, "forè¯­å¥ä¸­åº”è¯¥æ˜¯\':=\'è€Œä¸æ˜¯\'=\'");
 			next_sym();
 		}
 		else
-			info(lineno,"forÓï¾äÖĞÈ±ÉÙ\':=\'");
+			info(lineno,"forè¯­å¥ä¸­ç¼ºå°‘\':=\'");
 	}
 	else
 		next_sym();
@@ -570,14 +570,14 @@ void parse_for_statement(){
 		next_sym();
 	}
 	else
-		info(lineno,"È±ÉÙTO»òDOWNTO");
+		info(lineno,"ç¼ºå°‘TOæˆ–DOWNTO");
 	
 	limit = parse_expression();
 	gen_code(LABEL_INS, empty_address, empty_address, l_start);
 	match_type(addr, limit);
 	gen_code(ins, addr, limit, l_end);
 	if(symbol != DO_SYM)
-		info(lineno, "forÓï¾äÈ±ÉÙdo");
+		info(lineno, "forè¯­å¥ç¼ºå°‘do");
 	else
 		next_sym();
 	parse_statement();
@@ -599,14 +599,14 @@ void parse_case_statement(){
 	//set_type s;
 	l_end = new_label();
 	l_next = new_label();
-	//l_next = l_end;//µÚÒ»¸öÖµÃ»ÓĞÓÃ
+	//l_next = l_end;//ç¬¬ä¸€ä¸ªå€¼æ²¡æœ‰ç”¨
 	if(symbol != CASE_SYM)
-		info(lineno, "Çé¿öÓï¾äÓ¦ÒÔcase¿ªÍ·");
+		info(lineno, "æƒ…å†µè¯­å¥åº”ä»¥caseå¼€å¤´");
 	else
 		next_sym();
 	a = parse_expression();
 	if(symbol != OF_SYM)
-		info(lineno, "Çé¿öÓï¾äÈ±ÉÙof");
+		info(lineno, "æƒ…å†µè¯­å¥ç¼ºå°‘of");
 	//else
 		//next_sym();
 	/*while(symbol != END_SYM){		
@@ -615,7 +615,7 @@ void parse_case_statement(){
 		do{
 			if(symbol == CHAR_CONST_SYM){
 				if(get_type(a) == INT_TYPE)
-					info(lineno, "ÀàĞÍ²»Æ¥Åä");
+					info(lineno, "ç±»å‹ä¸åŒ¹é…");
 				b.type = VALUE_ADDR;
 				b.pointer = num;
 				gen_code(JMPNE_INS,a, b, l_next);
@@ -623,7 +623,7 @@ void parse_case_statement(){
 			}
 			else if(symbol == INTEGER_CONST_SYM){
 				if(get_type(a) == CHAR_TYPE)
-					info(lineno, "ÀàĞÍ²»Æ¥Åä");
+					info(lineno, "ç±»å‹ä¸åŒ¹é…");
 				b.type = VALUE_ADDR;
 				b.pointer = num;
 				gen_code(JMPNE_INS,a, b, l_next);
@@ -632,7 +632,7 @@ void parse_case_statement(){
 
 			//TODO BUG
 			else{
-				info(lineno, "caseÓï¾äÖĞÖ»ÄÜÊÇ³£Á¿");
+				info(lineno, "caseè¯­å¥ä¸­åªèƒ½æ˜¯å¸¸é‡");
 				s = new_set();
 				add_set(s, const_first);
 				add_set(s, statement_first);
@@ -645,7 +645,7 @@ void parse_case_statement(){
 			}
 		}while(symbol == COMMA_SYM);
 		if(symbol != COLON_SYM)
-			info(lineno, "caseÓï¾äÖĞÈ±ÉÙ\':\'");
+			info(lineno, "caseè¯­å¥ä¸­ç¼ºå°‘\':\'");
 		else 
 			next_sym();
 		parse_statement();
@@ -655,7 +655,7 @@ void parse_case_statement(){
 			if(symbol == END_SYM)
 				break;
 			else
-				info(lineno, "È±ÉÙ\';\'");
+				info(lineno, "ç¼ºå°‘\';\'");
 			s = new_set();
 			insert_set(s, SEMICOLON_SYM);
 			insert_set(s, COMMA_SYM);
@@ -669,7 +669,7 @@ void parse_case_statement(){
 	}
 	gen_code(LABEL_INS, empty_address, empty_address, l_end);
 	if(symbol != END_SYM)
-		info(lineno, "caseÓï¾äµ±ÒÔend½áÊø");
+		info(lineno, "caseè¯­å¥å½“ä»¥endç»“æŸ");
 	else
 		next_sym();
 		*/
@@ -682,7 +682,7 @@ void parse_case_statement(){
 				next_sym();
 			if(symbol == CHAR_CONST_SYM){
 				if(get_type(a) == INT_TYPE)
-					info(lineno, "ÀàĞÍ²»Æ¥Åä");
+					info(lineno, "ç±»å‹ä¸åŒ¹é…");
 				b.type = VALUE_ADDR;
 				b.pointer = num;
 				gen_code(JMPE_INS,a, b, l_current);
@@ -690,7 +690,7 @@ void parse_case_statement(){
 			}
 			else if(symbol == INTEGER_CONST_SYM){
 				if(get_type(a) == CHAR_TYPE)
-					info(lineno, "ÀàĞÍ²»Æ¥Åä");
+					info(lineno, "ç±»å‹ä¸åŒ¹é…");
 				b.type = VALUE_ADDR;
 				b.pointer = num;
 				gen_code(JMPE_INS,a, b, l_current);
@@ -699,7 +699,7 @@ void parse_case_statement(){
 
 			//TODO BUG
 			else{
-				info(lineno, "caseÓï¾äÖĞÖ»ÄÜÊÇ³£Á¿");
+				info(lineno, "caseè¯­å¥ä¸­åªèƒ½æ˜¯å¸¸é‡");
 				next_sym();
 				/*s = new_set();
 				add_set(s, const_first);
@@ -713,7 +713,7 @@ void parse_case_statement(){
 			}
 		}while(symbol == COMMA_SYM);
 		if(symbol != COLON_SYM){
-			info(lineno, "forÓï¾äÖĞÈ±ÉÙ\':\'");
+			info(lineno, "forè¯­å¥ä¸­ç¼ºå°‘\':\'");
 		}
 		else
 			next_sym();
@@ -729,7 +729,7 @@ void parse_case_statement(){
 	gen_code(LABEL_INS, empty_address, empty_address, l_next);
 	gen_code(LABEL_INS, empty_address, empty_address, l_end);
 	if(symbol != END_SYM){
-		info(lineno, "forÓï¾äÈ±ÉÙend");
+		info(lineno, "forè¯­å¥ç¼ºå°‘end");
 	}
 	else
 		next_sym();
@@ -748,7 +748,7 @@ void parse_if_statement()
 	
 
 	if(symbol != IF_SYM){
-		info(lineno, "ifÓï¾äÓ¦if¿ªÊ¼");
+		info(lineno, "ifè¯­å¥åº”ifå¼€å§‹");
 	}
 	else
 		next_sym();
@@ -764,17 +764,17 @@ void parse_if_statement()
 	else if(symbol == GEQ_SYM)
 		ins = JMPL_INS;
 	else
-		info(lineno, "¹ØÏµ±í´ïÊ½ÖĞÃ»ÓĞ¹ØÏµ·û");
+		info(lineno, "å…³ç³»è¡¨è¾¾å¼ä¸­æ²¡æœ‰å…³ç³»ç¬¦");
 	//next_sym();
 	y = parse_expression();
 	gen_code(ins, x, y, l1);
 
 	if(symbol != THEN_SYM){
-		info(lineno, "ifÓï¾äÖĞÈ±ÉÙthen");
+		info(lineno, "ifè¯­å¥ä¸­ç¼ºå°‘then");
 	}
 	else
 		next_sym();
-	//TODO:¡¡¼ì²éNO_TYPEÊÇ·ñ´¦Àí
+	//TODO:ã€€æ£€æŸ¥NO_TYPEæ˜¯å¦å¤„ç†
 	parse_statement();
 	gen_code(JMP_INS, empty_address, empty_address, l2);
 	gen_code(LABEL_INS, empty_address, empty_address, l1);
@@ -804,7 +804,7 @@ void parse_statement(){
 	else if(symbol == IDENTIFIER_SYM){
 		ident_idx = find_identifier(identifier);
 		if(ident_idx == 0)
-			info(lineno, "±êÊ¶·ûÎ´¶¨Òå");
+			info(lineno, "æ ‡è¯†ç¬¦æœªå®šä¹‰");
 		else
 			switch(identifier_object(ident_idx)){
 			case VARIABLE:
@@ -819,7 +819,7 @@ void parse_statement(){
 				parse_call_statement();
 				break;
 			default:          //CONSTANT
-				info(lineno, "³£Á¿²»ÄÜ¸³Öµ");
+				info(lineno, "å¸¸é‡ä¸èƒ½èµ‹å€¼");
 				skip_to(statement_first);
 		}
 		
@@ -831,7 +831,7 @@ void parse_const_dec(){
 	int value = 0;
 	set_type s;
 	if(symbol != IDENTIFIER_SYM){
-		info(lineno, "³£Á¿¶¨ÒåÓĞÎó£¬Ó¦Îª±êÊ¶·û");
+		info(lineno, "å¸¸é‡å®šä¹‰æœ‰è¯¯ï¼Œåº”ä¸ºæ ‡è¯†ç¬¦");
 		s = new_set();
 		add_set(s, block_first);
 		insert_set(s, IDENTIFIER_SYM);
@@ -839,14 +839,14 @@ void parse_const_dec(){
 		free(s);
 	}
 	if(symbol == IDENTIFIER_SYM){
-		if(!local_registed(identifier))//ÔÚÍ¬Ò»²ãÖĞ²éÕÒ
+		if(!local_registed(identifier))//åœ¨åŒä¸€å±‚ä¸­æŸ¥æ‰¾
 			register_identifier(identifier);
 		else
-			info(lineno, "ÖØ¸´¶¨Òå");
+			info(lineno, "é‡å¤å®šä¹‰");
 		next_sym();		
 		if (symbol == EQL_SYM || symbol == BECOMES_SYM){
 			if(symbol == BECOMES_SYM)
-				info(lineno,"³£Á¿¶¨ÒåÓ¦Ê¹ÓÃ'='");
+				info(lineno,"å¸¸é‡å®šä¹‰åº”ä½¿ç”¨'='");
 			next_sym();
 			value = parse_const();
 			if(symbol == INTEGER_CONST_SYM)
@@ -856,7 +856,7 @@ void parse_const_dec(){
 			next_sym();
 		}
 		else{
-			info(lineno, "³£Á¿¶¨ÒåÓï·¨´íÎó");
+			info(lineno, "å¸¸é‡å®šä¹‰è¯­æ³•é”™è¯¯");
 			//if(in_set(symbol, const_first))
 			s = new_set();
 			add_set(s, block_first);
@@ -873,7 +873,7 @@ void parse_const_dec(){
 		else if(symbol == SEMICOLON_SYM){
 			next_sym();
 			if(symbol == IDENTIFIER_SYM){
-				info(lineno, "³£Á¿¶¨ÒåÓ¦ÒÔ\',\'·Ö¸ô");
+				info(lineno, "å¸¸é‡å®šä¹‰åº”ä»¥\',\'åˆ†éš”");
 				parse_const_dec();
 			}
 			return;
@@ -888,22 +888,22 @@ void parse_const_dec(){
 }
 
 
-//½âÎö±äÁ¿ÉùÃ÷
+//è§£æå˜é‡å£°æ˜
 void parse_var_dec(){
-	int count = 0;	//Ò»´ÎÉùÃ÷µÄ¸öÊı
-	int size = 0;	//Êı×é´óĞ¡
+	int count = 0;	//ä¸€æ¬¡å£°æ˜çš„ä¸ªæ•°
+	int size = 0;	//æ•°ç»„å¤§å°
 	//int ix;
 	enum type_type type = INT_TYPE;
-	enum object_type object = VARIABLE;	//±äÁ¿»òÕßÊı×é
+	enum object_type object = VARIABLE;	//å˜é‡æˆ–è€…æ•°ç»„
 	set_type s;
 	if(symbol != IDENTIFIER_SYM)
-		info(lineno, "±äÁ¿ÉùÃ÷ÓĞÎó");
+		info(lineno, "å˜é‡å£°æ˜æœ‰è¯¯");
 	while(symbol == IDENTIFIER_SYM){
 		/*ix = find_identifier(identifier);
 		if(ix != 0)
-			info(lineno, "±äÁ¿ÖØ¸´¶¨Òå");*/
+			info(lineno, "å˜é‡é‡å¤å®šä¹‰");*/
 		if(local_registed(identifier))
-			info(lineno, "±äÁ¿ÖØ¸´¶¨Òå");
+			info(lineno, "å˜é‡é‡å¤å®šä¹‰");
 		register_identifier(identifier);
 		count ++;
 		next_sym();
@@ -912,14 +912,14 @@ void parse_var_dec(){
 			break;
 		}
 		if(symbol != COMMA_SYM){
-			info(lineno, "±äÁ¿Ö®¼äÓ¦ÒÔ£¬·Ö¸ô");
+			info(lineno, "å˜é‡ä¹‹é—´åº”ä»¥ï¼Œåˆ†éš”");
 			if(symbol == IDENTIFIER_SYM)
 				continue;
 		}
 		next_sym();
 	}
 
-	//½âÎöÀàĞÍ
+	//è§£æç±»å‹
 	if(symbol == INTEGER_SYM){
 		next_sym();
 		type = INT_TYPE;
@@ -933,22 +933,22 @@ void parse_var_dec(){
 		object = ARRAY;
 
 		if(symbol != LSQUARE_SYM)
-			info(lineno, "Êı×éºóÈ±ÉÙ[");
+			info(lineno, "æ•°ç»„åç¼ºå°‘[");
 		next_sym();
 		if(symbol == INTEGER_CONST_SYM){
 			if(num <= 0){
-				info(lineno, "Êı×é´óĞ¡Ö»ÄÜÎªÕıÕûÊı");
+				info(lineno, "æ•°ç»„å¤§å°åªèƒ½ä¸ºæ­£æ•´æ•°");
 				size = 0;
 			}
 			size = num;
 		}
 		next_sym();
 		if(symbol != RSQUARE_SYM){
-			info(lineno, "Êı×éÉùÃ÷È±ÉÙ]");
+			info(lineno, "æ•°ç»„å£°æ˜ç¼ºå°‘]");
 		}
 		next_sym();
 		if(symbol != OF_SYM){
-			info(lineno, "Êı×éÉùÃ÷È±ÉÙof");
+			info(lineno, "æ•°ç»„å£°æ˜ç¼ºå°‘of");
 		}
 		next_sym();
 		if(symbol == INTEGER_SYM){
@@ -958,11 +958,11 @@ void parse_var_dec(){
 			type = CHAR_TYPE;
 		}
 		else{
-			info(lineno, "Êı×éÉùÃ÷ÀàĞÍ´íÎó");
+			info(lineno, "æ•°ç»„å£°æ˜ç±»å‹é”™è¯¯");
 		}
 		next_sym();
 		if(symbol != SEMICOLON_SYM){
-			info(lineno, "Êı×éÉùÃ÷È±ÉÙ;");
+			info(lineno, "æ•°ç»„å£°æ˜ç¼ºå°‘;");
 		}
 	}
 	fix_identifier(count, type, object,size, 0);
@@ -972,7 +972,7 @@ void parse_var_dec(){
 		insert_set(s, IDENTIFIER_SYM);
 		skip_to(s);
 		free(s);
-		info(lineno, "±äÁ¿ÉùÃ÷Ó¦ÒÔ\';\'½áÎ²");
+		info(lineno, "å˜é‡å£°æ˜åº”ä»¥\';\'ç»“å°¾");
 	}
 	else
 		next_sym();
@@ -982,7 +982,7 @@ void parse_var_dec(){
 	}
 }
 
-/* ½âÎöº¯Êı¹ı³Ìµ÷ÓÃµÄ²ÎÊı±í */
+/* è§£æå‡½æ•°è¿‡ç¨‹è°ƒç”¨çš„å‚æ•°è¡¨ */
 void parse_paralist(){
 	enum object_type para_object = VALUE_PARA;
 	enum type_type para_type = INT_TYPE;
@@ -992,13 +992,13 @@ void parse_paralist(){
 		para_object = VAR_PARA;
 	}
 	if(symbol != IDENTIFIER_SYM)
-		info(lineno, "ĞÎÊ½²ÎÊı±íÓĞÎó");
+		info(lineno, "å½¢å¼å‚æ•°è¡¨æœ‰è¯¯");
 	if(symbol == RROUND_SYM)
-		info(lineno, "ĞÎÊ½²ÎÊı±í²»ÄÜÎª¿Õ");
+		info(lineno, "å½¢å¼å‚æ•°è¡¨ä¸èƒ½ä¸ºç©º");
 	while(symbol == IDENTIFIER_SYM){
 		count ++;
 		if(local_registed(identifier))
-			info(lineno, "²ÎÊıÃûÖØ¸´¶¨Òå");
+			info(lineno, "å‚æ•°åé‡å¤å®šä¹‰");
 		register_identifier(identifier);
 		next_sym();
 
@@ -1008,7 +1008,7 @@ void parse_paralist(){
 		}
 
 		if(symbol != COMMA_SYM){
-			info(lineno, "²ÎÊı±íÖĞÆÚÍû\',\'");
+			info(lineno, "å‚æ•°è¡¨ä¸­æœŸæœ›\',\'");
 			if(symbol == IDENTIFIER_SYM)
 				continue;
 		}
@@ -1019,7 +1019,7 @@ void parse_paralist(){
 	else if (symbol == INTEGER_SYM)
 		para_type = INT_TYPE;
 	else
-		info(lineno, "²ÎÊı±íÀàĞÍ´íÎó");
+		info(lineno, "å‚æ•°è¡¨ç±»å‹é”™è¯¯");
 	fix_identifier(count, para_type, para_object, 0, 0);
 	next_sym();
 	if(symbol == SEMICOLON_SYM){
@@ -1030,8 +1030,8 @@ void parse_paralist(){
 	
 
 
-//½âÎö¹ı³Ìº¯ÊıÉùÃ÷£¬Èç¹ûÊÇ¹ı³ÌÔò·µ»ØNO_TYPE
-//Èç¹ûÊÇº¯ÊıÔò·µ»ØINT_TYPE»òCHAR_TYPE
+//è§£æè¿‡ç¨‹å‡½æ•°å£°æ˜ï¼Œå¦‚æœæ˜¯è¿‡ç¨‹åˆ™è¿”å›NO_TYPE
+//å¦‚æœæ˜¯å‡½æ•°åˆ™è¿”å›INT_TYPEæˆ–CHAR_TYPE
 enum type_type parse_proc_func_dec(){
 	enum object_type object = FUNCTION;
 	enum type_type func_type = NO_TYPE;
@@ -1039,16 +1039,16 @@ enum type_type parse_proc_func_dec(){
 		object = PROCEDURE;
 	next_sym();
 	if(symbol != IDENTIFIER_SYM)
-		info(lineno, "º¯Êı»ò¹ı³ÌËµÃ÷ÓĞº¯ÊıÃûÓĞÎó");
+		info(lineno, "å‡½æ•°æˆ–è¿‡ç¨‹è¯´æ˜æœ‰å‡½æ•°åæœ‰è¯¯");
 	else{
 		if(local_registed(identifier)){
-			info(lineno, "º¯Êı¹ı³ÌÃû¶¨ÒåÖØ¸´");
+			info(lineno, "å‡½æ•°è¿‡ç¨‹åå®šä¹‰é‡å¤");
 		}
 		register_block(identifier, object);
 		next_sym();
 	}
 	if(symbol != LROUND_SYM)
-		info(lineno, "È±ÉÙ(");
+		info(lineno, "ç¼ºå°‘(");
 	else
 		next_sym();
 	if(symbol == VAR_SYM || symbol == IDENTIFIER_SYM)
@@ -1056,12 +1056,12 @@ enum type_type parse_proc_func_dec(){
 		parse_paralist();
 	}
 	if(symbol != RROUND_SYM)
-		info(lineno, "¹ı³Ìº¯ÊıËµÃ÷È±ÉÙ)");
+		info(lineno, "è¿‡ç¨‹å‡½æ•°è¯´æ˜ç¼ºå°‘)");
 	else
 		next_sym();
 	if(object == FUNCTION){
 		if(symbol != COLON_SYM)
-			info(lineno, "º¯ÊıÉùÃ÷È±ÉÙ£º");
+			info(lineno, "å‡½æ•°å£°æ˜ç¼ºå°‘ï¼š");
 		else
 			next_sym();
 		if(symbol == CHAR_SYM)
@@ -1069,11 +1069,11 @@ enum type_type parse_proc_func_dec(){
 		else if(symbol == INTEGER_SYM)
 			func_type = INT_TYPE;
 		else
-			info(lineno, "º¯ÊıÀàĞÍÉùÃ÷ÓĞÎó");
+			info(lineno, "å‡½æ•°ç±»å‹å£°æ˜æœ‰è¯¯");
 		next_sym();
 	}
 	if(symbol != SEMICOLON_SYM){
-		info(lineno, "º¯Êı¹ı³ÌËµÃ÷È±ÉÙ£»");
+		info(lineno, "å‡½æ•°è¿‡ç¨‹è¯´æ˜ç¼ºå°‘ï¼›");
 		skip_to(block_first);
 	}
 	else
@@ -1082,11 +1082,11 @@ enum type_type parse_proc_func_dec(){
 	return func_type;
 }
 
-//½âÎö¸´ºÏÓï¾ä
+//è§£æå¤åˆè¯­å¥
 void parse_multi_statement(){
 	set_type s1;
 	if(symbol != BEGIN_SYM){
-		info(lineno, "¸´ºÏÓï¾äÈ±ÉÙbegin");
+		info(lineno, "å¤åˆè¯­å¥ç¼ºå°‘begin");
 		s1 = new_set();
 		add_set(s1, statement_first);
 		skip_to(s1);
@@ -1101,7 +1101,7 @@ void parse_multi_statement(){
 		parse_statement();
 	}
 	if(symbol != END_SYM){
-		info(lineno, "¸´ºÏÓï¾äÓ¦ÒÔend½áÎ²");
+		info(lineno, "å¤åˆè¯­å¥åº”ä»¥endç»“å°¾");
 		s1 = new_set();
 		insert_set(s1, END_SYM);
 		add_set(s1, block_first);
@@ -1113,9 +1113,9 @@ void parse_multi_statement(){
 		next_sym();
 }
 	
-//½âÎö·Ö³ÌĞò
-//´Óconst,var»òbegin¿ªÊ¼£¬²»°üÀ¨¹ı³Ìº¯ÊıÉùÃ÷£¨²ÎÊı)
-//block_typeÊÇ³ÌĞòÀàĞÍ
+//è§£æåˆ†ç¨‹åº
+//ä»const,varæˆ–beginå¼€å§‹ï¼Œä¸åŒ…æ‹¬è¿‡ç¨‹å‡½æ•°å£°æ˜ï¼ˆå‚æ•°)
+//block_typeæ˜¯ç¨‹åºç±»å‹
 void parse_block(enum type_type block_type){
 	enum type_type sub_block_type;
 	struct address block_addr;
@@ -1123,7 +1123,7 @@ void parse_block(enum type_type block_type){
 	
 	set = new_set();
 	if(!in_set(symbol, block_first)){
-		info(lineno, "Ó¦ÊÇconst,var»ò begin");
+		info(lineno, "åº”æ˜¯const,varæˆ– begin");
 		skip_to(block_first);
 	}
 	if(symbol == CONST_SYM){
@@ -1131,7 +1131,7 @@ void parse_block(enum type_type block_type){
 		parse_const_dec();
 	}
 	if(!in_set(symbol, block_first)){
-		info(lineno, "Óï·¨´íÎó");
+		info(lineno, "è¯­æ³•é”™è¯¯");
 		skip_to(block_first);
 	}
 	if(symbol == VAR_SYM){
@@ -1139,7 +1139,7 @@ void parse_block(enum type_type block_type){
 		parse_var_dec();
 	}
 	if(!in_set(symbol, block_first)){
-		info(lineno, "Óï·¨´íÎó");
+		info(lineno, "è¯­æ³•é”™è¯¯");
 		skip_to(block_first);
 	}
 	while(symbol == FUNC_SYM || symbol == PROC_SYM ||
@@ -1148,28 +1148,28 @@ void parse_block(enum type_type block_type){
 		if(symbol == FUNC_SYM || symbol == PROC_SYM){
 			sub_block_type = parse_proc_func_dec();		
 			if(!in_set(symbol, block_first)){
-				info(lineno, "×Ó³ÌĞòÉùÃ÷´íÎó");
+				info(lineno, "å­ç¨‹åºå£°æ˜é”™è¯¯");
 				skip_to(block_first);
 			}
 			parse_block(sub_block_type);
 		}
 		else if(symbol == VAR_SYM){
-			info(lineno, "ÉùÃ÷Ë³Ğò");
+			info(lineno, "å£°æ˜é¡ºåº");
 			next_sym();
 			parse_var_dec();
 		}
 		else{
-			info(lineno, "ÉùÃ÷Ë³Ğò");
+			info(lineno, "å£°æ˜é¡ºåº");
 			next_sym();
 			parse_const_dec();
 		}
 	}
 
 	if(symbol != BEGIN_SYM){
-		info(lineno, "¸´ºÏÓï¾äÓ¦ÒÔbegin¿ªÊ¼");
+		info(lineno, "å¤åˆè¯­å¥åº”ä»¥beginå¼€å§‹");
 		skip_to(statement_first);
 	}
-	//Çå¿Õcode_table()
+	//æ¸…ç©ºcode_table()
 	clear_code_table();
 	block_addr.pointer = get_current_block();
 	block_addr.type = VAR_ADDR;
@@ -1190,23 +1190,23 @@ void parse_block(enum type_type block_type){
 	pop_block();
 	if(get_current_level() != 0){
 		if(symbol != SEMICOLON_SYM)
-			info(lineno, "º¯Êı¹ı³Ì¶¨ÒåÈ±ÉÙ;");
+			info(lineno, "å‡½æ•°è¿‡ç¨‹å®šä¹‰ç¼ºå°‘;");
 		else
 			next_sym();
 	}
 	else{
 		if(symbol != PERIOD_SYM)
-		info(lineno, "³ÌĞòÓ¦ÒÔ.½áÊø");
+		info(lineno, "ç¨‹åºåº”ä»¥.ç»“æŸ");
 	}
 	free(set);
 }
 
-//Óï·¨·ÖÎö³ÌĞò¿ªÊ¼´¦
+//è¯­æ³•åˆ†æç¨‹åºå¼€å§‹å¤„
 void parse_programe(){
 	next_sym();
 	parse_block(NO_TYPE);
 	/*if(symbol != PERIOD_SYM){
-		info(lineno, "È±ÉÙ\'.\'");
+		info(lineno, "ç¼ºå°‘\'.\'");
 	}*/
 	assm_over();
 }

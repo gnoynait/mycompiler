@@ -6,7 +6,7 @@
 #include<ctype.h>
 
 #define DEBUG 1
-/* ±êÊ¶·û×î´ó³¤¶È */
+/* æ ‡è¯†ç¬¦æœ€å¤§é•¿åº¦ */
 #define ID_SIZE 20
 //max integer.
 #define STR_SIZE 80
@@ -22,7 +22,7 @@
 #define ERROR_MAX       58
 #define INSTRUCTION_NUM    63
 
-/*¼¯ºÏÀàÐÍ, ÓÃÓÚÌø×ª */
+/*é›†åˆç±»åž‹, ç”¨äºŽè·³è½¬ */
 typedef int* set_type;
 
 
@@ -31,7 +31,7 @@ enum boolean{
 	FALSE
 };
 
-//±êÊ¶·ûµÄÀà±ð
+//æ ‡è¯†ç¬¦çš„ç±»åˆ«
 #define SYMBOL_NUM 43
 enum symbol_type{
 	PLUS_SYM,			//	+
@@ -85,52 +85,52 @@ enum symbol_type{
 	READ_SYM,			//	read
 	WRITE_SYM,			//	write
 
-	INTEGER_CONST_SYM,	//	ÕûÐÍ³£Á¿
-	CHAR_CONST_SYM,		//	×Ö·û³£Á¿
-	STR_CONST_SYM,		//	×Ö·û´®³£Á¿
+	INTEGER_CONST_SYM,	//	æ•´åž‹å¸¸é‡
+	CHAR_CONST_SYM,		//	å­—ç¬¦å¸¸é‡
+	STR_CONST_SYM,		//	å­—ç¬¦ä¸²å¸¸é‡
 
-	IDENTIFIER_SYM		//	±êÊ¶
+	IDENTIFIER_SYM		//	æ ‡è¯†
 };
 
 
 
-/* ·ûºÅ±íÖÐµÄÀàÐÍ */
+/* ç¬¦å·è¡¨ä¸­çš„ç±»åž‹ */
 enum object_type{
-	PROCEDURE,	//¹ý³Ì
-	FUNCTION,	//º¯Êý
-	VAR_PARA,	//±äÁ¿²ÎÊý
-	VALUE_PARA,	//Öµ²Î
-	CONSTANT,	//³£Á¿
-	VARIABLE,	//±äÁ¿
-	ARRAY       //Êý×é
+	PROCEDURE,	//è¿‡ç¨‹
+	FUNCTION,	//å‡½æ•°
+	VAR_PARA,	//å˜é‡å‚æ•°
+	VALUE_PARA,	//å€¼å‚
+	CONSTANT,	//å¸¸é‡
+	VARIABLE,	//å˜é‡
+	ARRAY       //æ•°ç»„
 };
 
 /* basic types */
 enum type_type{
-	NO_TYPE,	//ÎÞÀàÐÍ
-	INT_TYPE,	//ÕûÐÍ
-	CHAR_TYPE	//×Ö·ûÐÍ
+	NO_TYPE,	//æ— ç±»åž‹
+	INT_TYPE,	//æ•´åž‹
+	CHAR_TYPE	//å­—ç¬¦åž‹
 };
 
 
 #define MAX_NAME_LEN 30
 
 struct symbol_table_node{
-	char name[MAX_NAME_LEN];//±êÊ¶·ûÃû³Æ
-	enum object_type object;//ÖÖÀà£¬°üÀ¨³£Á¿£¬±äÁ¿£¬¹ý³Ì£¬º¯Êý£¬Êý×é£¬VAR_PARA, VALUE_PARA
-	enum type_type type;//ÀàÐÍ£¬°üÀ¨ÕûÐÍ£¬×Ö·ûÐÍ
-	//int reference;//ÓÃÓÚÒýÓÃÍâ±í
-	//int is_normal;//ÊÇ·ñÊÇ±äÁ¿ÐÎ²Î
-	//int previous;//Í¬Ò»²ã´ÎÖÐ±êÊ¶·û×îºóÒ»¸öµØÖ·
-	int level;//²ã´ÎÊý
-	int offset;//Ïà¶Ô ÓÚ»ùµØÖ·µÄÆ«ÒÆÁ¿
-	int value;//ÕûÐÍ³£Á¿ºÍ×Ö·ûÐÍ³£Á¿µÄÖµ,¹ý³Ìº¯Êý²ÎÊý¸öÊý
-	int size;//Êý×éµÄ³¤¶È£¬º¯Êý¹ý³ÌµÄ¿Õ¼ä´óÐ¡
+	char name[MAX_NAME_LEN];//æ ‡è¯†ç¬¦åç§°
+	enum object_type object;//ç§ç±»ï¼ŒåŒ…æ‹¬å¸¸é‡ï¼Œå˜é‡ï¼Œè¿‡ç¨‹ï¼Œå‡½æ•°ï¼Œæ•°ç»„ï¼ŒVAR_PARA, VALUE_PARA
+	enum type_type type;//ç±»åž‹ï¼ŒåŒ…æ‹¬æ•´åž‹ï¼Œå­—ç¬¦åž‹
+	//int reference;//ç”¨äºŽå¼•ç”¨å¤–è¡¨
+	//int is_normal;//æ˜¯å¦æ˜¯å˜é‡å½¢å‚
+	//int previous;//åŒä¸€å±‚æ¬¡ä¸­æ ‡è¯†ç¬¦æœ€åŽä¸€ä¸ªåœ°å€
+	int level;//å±‚æ¬¡æ•°
+	int offset;//ç›¸å¯¹ äºŽåŸºåœ°å€çš„åç§»é‡
+	int value;//æ•´åž‹å¸¸é‡å’Œå­—ç¬¦åž‹å¸¸é‡çš„å€¼,è¿‡ç¨‹å‡½æ•°å‚æ•°ä¸ªæ•°
+	int size;//æ•°ç»„çš„é•¿åº¦ï¼Œå‡½æ•°è¿‡ç¨‹çš„ç©ºé—´å¤§å°
 };
 
 
 
-/*³ÌÐò±í½áµã*/
+/*ç¨‹åºè¡¨ç»“ç‚¹*/
 struct block_table_node{
 	int last;
 	int lastpar;
@@ -138,71 +138,71 @@ struct block_table_node{
 	int vsize;
 };
 
-//ËÄÔªÊ½Ö¸Áî
+//å››å…ƒå¼æŒ‡ä»¤
 enum instruction_type{
 	ADD_INS,	//	+	z=x+y
 	MINUS_INS,	//	-	z=x-y
 	DIV_INS,	//	/	z=x/y
 	MULT_INS,	//	*	z=x*y
 	NEG_INS,	// z = -x
-	INC_INS,	//	¼Ó1	z++
-	DEC_INS,	//	¼õ1	z--
+	INC_INS,	//	åŠ 1	z++
+	DEC_INS,	//	å‡1	z--
 	//ARRAY_INS,	//	z=x[y]
 
-	ASSIGN_INS,	//	¸³Öµz=x
+	ASSIGN_INS,	//	èµ‹å€¼z=x
 
-	//CMP_INS,	//	±È½Ï	flag = z-0
-	LABEL_INS,	//	±êÇ©	lable z
-	JMP_INS,	//	ÎÞÌõ¼þÌø×ª	goto z
-	JMPE_INS,	//	ÏàµÈÌø×ª	if x=y goto z
-	JMPNE_INS,	//	²»ÏàµÈÌø×ª	if x <> y goto z
-	JMPL_INS,	//	Ð¡ÓÚÌø×ª		if x < y goto z
-	JMPNL_INS,	//	´óÓÚµÈÓÚÌø×ª if x >= y goto z
-	JMPG_INS,	//	´óÓÚÌø×ª		if x > y goto z
-	JMPNG_INS,	//	Ð¡ÓÚµÈÓÚÌø×ª	if x <= y goto z
+	//CMP_INS,	//	æ¯”è¾ƒ	flag = z-0
+	LABEL_INS,	//	æ ‡ç­¾	lable z
+	JMP_INS,	//	æ— æ¡ä»¶è·³è½¬	goto z
+	JMPE_INS,	//	ç›¸ç­‰è·³è½¬	if x=y goto z
+	JMPNE_INS,	//	ä¸ç›¸ç­‰è·³è½¬	if x <> y goto z
+	JMPL_INS,	//	å°äºŽè·³è½¬		if x < y goto z
+	JMPNL_INS,	//	å¤§äºŽç­‰äºŽè·³è½¬ if x >= y goto z
+	JMPG_INS,	//	å¤§äºŽè·³è½¬		if x > y goto z
+	JMPNG_INS,	//	å°äºŽç­‰äºŽè·³è½¬	if x <= y goto z
 	//IF_INS,		//	.IF
 	//ELSE_INS,	//	.else
 	//ENDIF_INS,	//	.endif
 	
-	VAR_PARA_INS,	//±äÁ¿²ÎÊý		z
-	VALUE_PARA_INS,	//Öµ²ÎÊý		z
-	CALL_INS,	//	µ÷ÓÃ¹ý³Ìº¯Êý	x¹ý³ÌµØÖ·, z·µ»ØÖµµØÖ·
-	RET_INS,	//	¹ý³Ìº¯Êý·µ»Ø	z
+	VAR_PARA_INS,	//å˜é‡å‚æ•°		z
+	VALUE_PARA_INS,	//å€¼å‚æ•°		z
+	CALL_INS,	//	è°ƒç”¨è¿‡ç¨‹å‡½æ•°	xè¿‡ç¨‹åœ°å€, zè¿”å›žå€¼åœ°å€
+	RET_INS,	//	è¿‡ç¨‹å‡½æ•°è¿”å›ž	z
 
-	READC_INS,	//	¶ÁÈë×Ö·û		char->z
-	READI_INS,	//	¶ÁÈëÕûÊý		int->z
+	READC_INS,	//	è¯»å…¥å­—ç¬¦		char->z
+	READI_INS,	//	è¯»å…¥æ•´æ•°		int->z
 	/*READL_INS,	//  Read a new line character.*/
-	WRITEC_INS,	//	Ð´×Ö·û			out << z
-	WRITEI_INS,	//	Ð´ÕûÊý			out << z
-	WRITES_INS,	//	Ð´×Ö·û´®		out	<< z
-	WRITEL_INS,	//	Ð´»»ÐÐ·û
+	WRITEC_INS,	//	å†™å­—ç¬¦			out << z
+	WRITEI_INS,	//	å†™æ•´æ•°			out << z
+	WRITES_INS,	//	å†™å­—ç¬¦ä¸²		out	<< z
+	WRITEL_INS,	//	å†™æ¢è¡Œç¬¦
 
-	BLOCK_INS,	//½øÈë×Ó³ÌÐò
+	BLOCK_INS,	//è¿›å…¥å­ç¨‹åº
 
-	ERROR_INS,		//ÎÞ²Ù×÷£¬³ö´í
-	//ADDR_INS,		//È¡µØÖ· È¡ x[y]µÄµØÖ·´æµ½z
-	//STORE_INS		//½«x µÄÄÚÈÝ´æµ½µØÖ·z
+	ERROR_INS,		//æ— æ“ä½œï¼Œå‡ºé”™
+	//ADDR_INS,		//å–åœ°å€ å– x[y]çš„åœ°å€å­˜åˆ°z
+	//STORE_INS		//å°†x çš„å†…å®¹å­˜åˆ°åœ°å€z
 };
 
 
-//ËÄÔªÊ½µØÖ·ÀàÐÍ
+//å››å…ƒå¼åœ°å€ç±»åž‹
 enum address_type{
-	EMPTY_ADDR,	//¿Õ	
-	VAR_ADDR,	//·ûºÅ±í±êÊ¶·ûµØÖ·
-	VALUE_ADDR,	//Öµ
-	LABEL_ADDR,	//±êÇ©
-	STRING_ADDR,	//×Ö·û´®
-	ARRAY_ELEMENT_ADDR //Êý×éÔªËØµØÖ·
+	EMPTY_ADDR,	//ç©º	
+	VAR_ADDR,	//ç¬¦å·è¡¨æ ‡è¯†ç¬¦åœ°å€
+	VALUE_ADDR,	//å€¼
+	LABEL_ADDR,	//æ ‡ç­¾
+	STRING_ADDR,	//å­—ç¬¦ä¸²
+	ARRAY_ELEMENT_ADDR //æ•°ç»„å…ƒç´ åœ°å€
 };
 
 
-//ËÄÔªÊ½ÖÐµØÖ·
+//å››å…ƒå¼ä¸­åœ°å€
 struct address{
 	enum address_type type;
 	int pointer;
 };
 
-//ËÄÔªÊ½
+//å››å…ƒå¼
 struct code{
 	enum instruction_type instruction;
 	struct address x;
@@ -212,15 +212,15 @@ struct code{
 
 struct temp_node{
 	enum type_type type;/* CHAR_TYEP or INTEGER_TYPE */
-	int level;			/* ²ã´Î */
-	int offset;			/* ¾à¹ý³Ìº¯ÊýµÄ¾àÀë */
+	int level;			/* å±‚æ¬¡ */
+	int offset;			/* è·è¿‡ç¨‹å‡½æ•°çš„è·ç¦» */
 };
 
-extern FILE * source_file;	/* Ô´³ÌÐòÎÄ¼þ */
-//extern FILE * log_file;		/* ÈÕÖ¾ÎÄ¼þ */
-extern FILE * code_file;	/* Êä³ö»ã±à³ÌÐòÎÄ¼þ */
+extern FILE * source_file;	/* æºç¨‹åºæ–‡ä»¶ */
+//extern FILE * log_file;		/* æ—¥å¿—æ–‡ä»¶ */
+extern FILE * code_file;	/* è¾“å‡ºæ±‡ç¼–ç¨‹åºæ–‡ä»¶ */
 
-extern int lineno;			/* µ±Ç°ÐÐºÅ */
+extern int lineno;			/* å½“å‰è¡Œå· */
 
 
 #endif

@@ -9,12 +9,12 @@ FILE * source_file;  //source file
 FILE * code_file;    //output code file
 //FILE * log_file; //log file
 
-int lineno = 0; //源程序的行号
+int lineno = 0; //婧愮▼搴忕殑琛屽彿
 
 int main(int argc, char * argv[]){
 	int i;
 	char source_file_name[STR_SIZE];
-	int is_optim = 0;	//优化
+	int is_optim = 0;	//浼樺寲
 	/*log_file = fopen("log.txt", "w");
 	if(log_file == NULL){
 		printf("CAN NOT OPEN LOG FILE!\n");
@@ -49,7 +49,7 @@ int main(int argc, char * argv[]){
 	util_init();
 
 	parse_programe();
-	printf("\n\n编译结束.\n");
+	printf("\n\n缂栬瘧缁撴潫.\n");
 	
 	fclose(source_file);
 	fclose(code_file);

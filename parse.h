@@ -1,10 +1,10 @@
 #ifndef PARSE_H
 #define PARSE_H
 #include"global.h"
-void parse_block();//½âÎö·Ö³ÌĞò
-void parse_const_dec();//½âÎö³£Á¿ËµÃ÷
-void parse_var_dec();//½âÎö±äÁ¿ËµÃ÷
-enum type_type parse_proc_func_dec();//½âÎö¹ı³Ì»òº¯ÊıËµÃ÷
+void parse_block();//è§£æåˆ†ç¨‹åº
+void parse_const_dec();//è§£æå¸¸é‡è¯´æ˜
+void parse_var_dec();//è§£æå˜é‡è¯´æ˜
+enum type_type parse_proc_func_dec();//è§£æè¿‡ç¨‹æˆ–å‡½æ•°è¯´æ˜
 void parse_if_statement();
 struct address parse_factor();
 struct address parse_term();

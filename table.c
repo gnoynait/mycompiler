@@ -8,14 +8,14 @@
 char str_tab[STR_TAB_SIZE];
 int str_tab_idx = 0;
 
-/*	½«×Ö·û´®´æÈë×Ö·ûºÅ±íÖĞ,·µ»ØËù´æ×Ö·û´®Ë÷Òı	*/
+/*	å°†å­—ç¬¦ä¸²å­˜å…¥å­—ç¬¦å·è¡¨ä¸­,è¿”å›æ‰€å­˜å­—ç¬¦ä¸²ç´¢å¼•	*/
 int store_str(char * str){
 	int len;
 	int index = str_tab_idx;
 	len = strlen(str);
 
 	if (str_tab_idx+len >= STR_TAB_SIZE-1){
-		fatal(7);	/* Ò²ĞíÓ¦¸ÃÖ±½Ó¸ø³ö×Ö·û´®	*/
+		fatal(7);	/* ä¹Ÿè®¸åº”è¯¥ç›´æ¥ç»™å‡ºå­—ç¬¦ä¸²	*/
 		return -1;
 	}
 
@@ -24,12 +24,12 @@ int store_str(char * str){
 	return index;
 }
 
-/* ´Ó×Ö·û´®±íÖĞÌáÈ¡×Ö·û´® */
-/* index:	×Ö·û´®µÄË÷Òı */
-/* retrun:	×Ö·û´®Ö¸Õë	*/
+/* ä»å­—ç¬¦ä¸²è¡¨ä¸­æå–å­—ç¬¦ä¸² */
+/* index:	å­—ç¬¦ä¸²çš„ç´¢å¼• */
+/* retrun:	å­—ç¬¦ä¸²æŒ‡é’ˆ	*/
 char * get_str(int index){
 	if(index < 0||index > str_tab_idx){
-		info(lineno, "×Ö·û´®±íÒıÓÃ´íÎó£¡\n");
+		info(lineno, "å­—ç¬¦ä¸²è¡¨å¼•ç”¨é”™è¯¯ï¼\n");
 		return "";
 	}
 	return (char *) str_tab + index;
@@ -37,16 +37,16 @@ char * get_str(int index){
 
 /************************************************/
 /*												*/
-/*					·ûºÅ±í						*/
+/*					ç¬¦å·è¡¨						*/
 /*												*/
 /************************************************/
 
 struct symbol_table_node symbol_table[TABLE_SIZE] = {{"__main",PROCEDURE, NO_TYPE, 0, 0, 0, 0}};
 
-int symbol_tab_idx = 0;//0¿Õ³ö
+int symbol_tab_idx = 0;//0ç©ºå‡º
 
-int block_index[MAX_LEVEL+1] = {0};//Ã¿²ã×Ó³ÌĞòÔÚ·ûºÅ±íÖĞµÄË÷Òı
-int current_level = 1;	//level 0Áô¸øÖ÷º¯Êı£¬¶øÖ÷º¯ÊıÃ»ÓĞÉùÃ÷
+int block_index[MAX_LEVEL+1] = {0};//æ¯å±‚å­ç¨‹åºåœ¨ç¬¦å·è¡¨ä¸­çš„ç´¢å¼•
+int current_level = 1;	//level 0ç•™ç»™ä¸»å‡½æ•°ï¼Œè€Œä¸»å‡½æ•°æ²¡æœ‰å£°æ˜
 
 int get_current_level()
 {
@@ -56,9 +56,9 @@ int get_current_block()
 {
 	return block_index[current_level];
 }
-/*int block_var_num = 0;//µ±Ç°²ãµÄ¾Ö²¿±äÁ¿¡¢³£Á¿Êı
+/*int block_var_num = 0;//å½“å‰å±‚çš„å±€éƒ¨å˜é‡ã€å¸¸é‡æ•°
 
-int block_para_num = 0;//µ±Ç°²ãµÄ²ÎÊı¸öÊı*/
+int block_para_num = 0;//å½“å‰å±‚çš„å‚æ•°ä¸ªæ•°*/
 
 char * identifier_name(int idx){
 	return symbol_table[idx].name;
@@ -82,8 +82,8 @@ int identifier_offset(int idx){
 	return symbol_table[idx].offset;
 }
 
-/*	´ÓµÚmax_level¿ªÊ¼ÏòÉÏ²éÕÒ¿É¼ûµÄidentifier	*/
-/*	·µ»ØË÷Òı,Î´ÕÒµ½·µ»Ø0						*/
+/*	ä»ç¬¬max_levelå¼€å§‹å‘ä¸ŠæŸ¥æ‰¾å¯è§çš„identifier	*/
+/*	è¿”å›ç´¢å¼•,æœªæ‰¾åˆ°è¿”å›0						*/
 int find_identifier(char *name)
 {
 	int i = symbol_tab_idx;
@@ -102,7 +102,7 @@ int find_identifier(char *name)
 }
 	
 
-/*	×îÍâ²ãÊÇ·ñÒÑ¾­µÇ¼Çname,ÒÑÔò·µ»Ø1£¬·ñÔò·µ»Ø0	*/
+/*	æœ€å¤–å±‚æ˜¯å¦å·²ç»ç™»è®°name,å·²åˆ™è¿”å›1ï¼Œå¦åˆ™è¿”å›0	*/
 int local_registed(char * name)
 {
 	int i;
@@ -112,7 +112,7 @@ int local_registed(char * name)
 	}
 	return 0;
 }
-//Ïò·ûºÅ±íÖĞµÇÈëĞÂ±êÊ¶·û£¬¼°ÆäËùÔÚ²ã´Î
+//å‘ç¬¦å·è¡¨ä¸­ç™»å…¥æ–°æ ‡è¯†ç¬¦ï¼ŒåŠå…¶æ‰€åœ¨å±‚æ¬¡
  void register_identifier(char * name){
 	 if(symbol_tab_idx == SYMBOL_TABLE_SIZE)
 		 fatal(1);
@@ -120,7 +120,7 @@ int local_registed(char * name)
 	 strcpy(symbol_table[symbol_tab_idx].name, name);
 	 symbol_table[symbol_tab_idx].level = current_level;
  }
- //¼ÆËãº¯Êı¹ı³ÌÓĞ¶àÉÙ¸ö²ÎÊı
+ //è®¡ç®—å‡½æ•°è¿‡ç¨‹æœ‰å¤šå°‘ä¸ªå‚æ•°
  int count_parameter(int func_idx){
 	 int l;
 	 int count = 0;
@@ -135,8 +135,8 @@ int local_registed(char * name)
 	 return count;
  }
 
- /*	×¢²á¹ı³Ìº¯Êı */
- /* ÌîÈë·ûºÅ±í£¬²¢¸üĞÂblock_indexºÍcurrent_level*/
+ /*	æ³¨å†Œè¿‡ç¨‹å‡½æ•° */
+ /* å¡«å…¥ç¬¦å·è¡¨ï¼Œå¹¶æ›´æ–°block_indexå’Œcurrent_level*/
  void register_block(char *name,enum object_type object){
 	 register_identifier(name);
 	 symbol_table[symbol_tab_idx].object = object;
@@ -149,8 +149,8 @@ int local_registed(char * name)
 
  }
 
-/*		×Ó³ÌĞòÍËÕ»		*/
-/*	½«·ûºÅ±íµ±Ç°²ãÍËÕ»	*/
+/*		å­ç¨‹åºé€€æ ˆ		*/
+/*	å°†ç¬¦å·è¡¨å½“å‰å±‚é€€æ ˆ	*/
 void pop_block(){
 	int pop_end;
 	int idx = symbol_tab_idx;
@@ -187,10 +187,10 @@ void pop_block(){
 	 symbol_table[block_idx].size = var_size;
  }
 
- //·µ»Ø·ûºÅ±íÖĞµÚidx¸ö±êÊ¶·ûÓ¦¸Ã·ÖÅäµÄµØÖ·
- //VARIABLE,ARRAYC:´Ó1¿ªÊ¼
+ //è¿”å›ç¬¦å·è¡¨ä¸­ç¬¬idxä¸ªæ ‡è¯†ç¬¦åº”è¯¥åˆ†é…çš„åœ°å€
+ //VARIABLE,ARRAYC:ä»1å¼€å§‹
  //FUNCTION, PROCUDURE,CONSTANT, VAR_PARA:0
- //VALUE_PARA: ´Ó1¿ªÊ¼µİ¼õ
+ //VALUE_PARA: ä»1å¼€å§‹é€’å‡
  int get_offset(int idx){
 	 int prev = idx -1;
 	 int i;
@@ -220,7 +220,7 @@ void pop_block(){
  }
 
 
-//½«×î½üµÄcount¸ö±êÊ¶·û²¹ÉÏÊôĞÔ, sizeËùÕ¼¿Õ¼ä´óĞ¡£¬ÈôÎŞ¿Õ¼ä£¬ÔòÎª0£¬ÈôÎªÊı×éÔòÊÇ´óĞ¡£¬±äÁ¿1
+//å°†æœ€è¿‘çš„countä¸ªæ ‡è¯†ç¬¦è¡¥ä¸Šå±æ€§, sizeæ‰€å ç©ºé—´å¤§å°ï¼Œè‹¥æ— ç©ºé—´ï¼Œåˆ™ä¸º0ï¼Œè‹¥ä¸ºæ•°ç»„åˆ™æ˜¯å¤§å°ï¼Œå˜é‡1
 void fix_identifier(int count, enum type_type type, enum object_type object, int size, int value){
 	int idx;
 	for(idx = symbol_tab_idx -count + 1;idx <= symbol_tab_idx; idx ++){
@@ -241,7 +241,7 @@ void fix_identifier(int count, enum type_type type, enum object_type object, int
 }
 void list_symbol_table(){
 	int idx;
-	printf("\nÃû³Æ	ÖÖÀà	ÀàĞÍ	²ã´Î	µØÖ·	Öµ	´óĞ¡\n");
+	printf("\nåç§°	ç§ç±»	ç±»å‹	å±‚æ¬¡	åœ°å€	å€¼	å¤§å°\n");
 	for(idx = 0; idx <= symbol_tab_idx; ++idx)
 		printf("%s\t%2d\t%2d\t%2d\t%2d\t%2d\t%2d\n",symbol_table[idx].name,
 		symbol_table[idx].object,symbol_table[idx].type, symbol_table[idx].level,
@@ -250,7 +250,7 @@ void list_symbol_table(){
 }
 
 
-//²úÉúÒ»¸öĞÂÁÙÊ±±äÁ¿£¬·µ»ØµØÖ·
+//äº§ç”Ÿä¸€ä¸ªæ–°ä¸´æ—¶å˜é‡ï¼Œè¿”å›åœ°å€
 struct address new_temp(enum type_type type){
 	struct address new_t;
 	static int new_temp_i = 0;
@@ -269,7 +269,7 @@ struct address new_temp(enum type_type type){
 
 /************************************************
 *												*
-*					Êı×éÔªËØ±í					*
+*					æ•°ç»„å…ƒç´ è¡¨					*
 *												*
 *************************************************/
 //TODO: fixme
@@ -295,7 +295,7 @@ struct address array_element(int array_idx, struct address offset_addr){
 	struct address array_addr;
 	if(array_table_idx == ARRAY_SIZE){
 		fatal(4);
-		return;
+		return array_addr;
 	}
 	array_table_idx ++;
 	array_addr.type = VAR_ADDR;
@@ -339,33 +339,33 @@ static char *get_ins_name(enum instruction_type ins){
 	case NEG_INS:
 		return "NEG";// z = -x
 	case INC_INS:
-		return "INC";//	¼Ó1	z++
+		return "INC";//	åŠ 1	z++
 	case DEC_INS:
-		return "DEC";	//	¼õ1	z--
+		return "DEC";	//	å‡1	z--
 	//case ARRAY_INS:
 		//return "ARRAY";//	z=x[y]
 
 	case ASSIGN_INS:
-		return "ASSIGN";//	¸³Öµz=x
+		return "ASSIGN";//	èµ‹å€¼z=x
 
 	//case CMP_INS:
-		//return "CMP";//	±È½Ï	flag = z-0
+		//return "CMP";//	æ¯”è¾ƒ	flag = z-0
 	case LABEL_INS:
-		return "LABEL";//	±êÇ©	lable z
+		return "LABEL";//	æ ‡ç­¾	lable z
 	case JMP_INS:
-		return "JMP";//	ÎŞÌõ¼şÌø×ª	goto z
+		return "JMP";//	æ— æ¡ä»¶è·³è½¬	goto z
 	case JMPE_INS:
-		return "JMPE";//	ÏàµÈÌø×ª	if x=y goto z
+		return "JMPE";//	ç›¸ç­‰è·³è½¬	if x=y goto z
 	case JMPNE_INS:
-		return "JMPNE";//	²»ÏàµÈÌø×ª	if x <> y goto z
+		return "JMPNE";//	ä¸ç›¸ç­‰è·³è½¬	if x <> y goto z
 	case JMPL_INS:
-		return "JMPL";//	Ğ¡ÓÚÌø×ª		if x < y goto z
+		return "JMPL";//	å°äºè·³è½¬		if x < y goto z
 	case JMPNL_INS:
-		return "JMPNL";//	´óÓÚµÈÓÚÌø×ª if x >= y goto z
+		return "JMPNL";//	å¤§äºç­‰äºè·³è½¬ if x >= y goto z
 	case JMPG_INS:
-		return "JMPG";//	´óÓÚÌø×ª		if x > y goto z
+		return "JMPG";//	å¤§äºè·³è½¬		if x > y goto z
 	case JMPNG_INS:
-		return "JMPNG";//	Ğ¡ÓÚµÈÓÚÌø×ª	if x <= y goto z
+		return "JMPNG";//	å°äºç­‰äºè·³è½¬	if x <= y goto z
 	//case IF_INS:
 		//return "IF";		//	.IF
 	//case ELSE_INS:
@@ -374,22 +374,22 @@ static char *get_ins_name(enum instruction_type ins){
 		//return "ENDIF";//	.endif
 	
 	case VAR_PARA_INS:
-		return "VAR_PARA";//±äÁ¿²ÎÊı		z
+		return "VAR_PARA";//å˜é‡å‚æ•°		z
 	case VALUE_PARA_INS:
-		return "VALUE_PARA";//Öµ²ÎÊı		z
+		return "VALUE_PARA";//å€¼å‚æ•°		z
 	case CALL_INS:
-		return "CALL";//	µ÷ÓÃ¹ı³Ìº¯Êı	z ¹ı³ÌµØÖ·
+		return "CALL";//	è°ƒç”¨è¿‡ç¨‹å‡½æ•°	z è¿‡ç¨‹åœ°å€
 	case RET_INS:
-		return "RET";//	¹ı³Ìº¯Êı·µ»Ø	z
+		return "RET";//	è¿‡ç¨‹å‡½æ•°è¿”å›	z
 
 	case READC_INS:
-		return "READC";//	¶ÁÈë×Ö·û		char->z
+		return "READC";//	è¯»å…¥å­—ç¬¦		char->z
 	case READI_INS:
-		return "READI";//	¶ÁÈëÕûÊı		int->z
+		return "READI";//	è¯»å…¥æ•´æ•°		int->z
 	case WRITEC_INS:
-		return "WRITEC";//	Ğ´×Ö·û			out << z
+		return "WRITEC";//	å†™å­—ç¬¦			out << z
 	case WRITEI_INS:
-		return "WRITEI";	//	Ğ´ÕûÊı			out << z
+		return "WRITEI";	//	å†™æ•´æ•°			out << z
 	case WRITES_INS:
 		return "WRITES";
 	case WRITEL_INS:
@@ -403,9 +403,9 @@ static char *get_ins_name(enum instruction_type ins){
 	//case STORE_INS:
 		return "STORE";
 	default:
-		return "Ô½½ç";
+		return "è¶Šç•Œ";
 	}
-}//	Ğ´×Ö·û´®		out	<< z
+}//	å†™å­—ç¬¦ä¸²		out	<< z
 
 static char * get_element(struct address a){
 	char buf[STR_SIZE];
@@ -438,7 +438,7 @@ void list_code()
 {
 	int i;
 	printf("CODELIST:\n");
-	printf("Ö¸Áî		x		y		z\n");
+	printf("æŒ‡ä»¤		x		y		z\n");
 	for(i = 0; i <= code_idx; i++)
 		printf("%s		%s		%s		%s\n", 
 			get_ins_name(codelist[i].instruction), 

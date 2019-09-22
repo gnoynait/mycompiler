@@ -16,8 +16,8 @@ static int ll = 0;         //line length
 FILE * source_file;
 int end_of_file = 0;
 
-#define RESERVE_NUM 20		//±£Áô×Ö¸öÊı
-//±£Áô×ÖÃû
+#define RESERVE_NUM 20		//ä¿ç•™å­—ä¸ªæ•°
+//ä¿ç•™å­—å
 char * reserve_name[RESERVE_NUM]={
 	"const",
 	"var",
@@ -40,7 +40,7 @@ char * reserve_name[RESERVE_NUM]={
 	"read",
 	"write"
 };
-//±£Áô×Ö±êÊ¶·û
+//ä¿ç•™å­—æ ‡è¯†ç¬¦
 enum symbol_type reserve_symbol[RESERVE_NUM]={
 	CONST_SYM,			//	const
 	VAR_SYM,			//	var	
@@ -92,7 +92,7 @@ enum symbol_type ch_symbol(int c){
 		return SEMICOLON_SYM;
 	case '.':
 		return PERIOD_SYM;
-	default:	//Ê§°Ü£¬·µ»ØEND_SYM×÷Îª³ö´íÌØÕ÷
+	default:	//å¤±è´¥ï¼Œè¿”å›END_SYMä½œä¸ºå‡ºé”™ç‰¹å¾
 		return END_SYM;
 	}
 }
@@ -101,7 +101,7 @@ enum symbol_type ch_symbol(int c){
 static int next_ch()
 {
 	/*if(end_of_file){
-		info(lineno, "³ÌĞò²»ÍêÕû");
+		info(lineno, "ç¨‹åºä¸å®Œæ•´");
 		fclose(source_file);
 		fclose(code_file);
 		fclose(source_file);
@@ -142,11 +142,11 @@ static int next_ch()
 int next_sym()
 {
 	int k;
-	/* ºöÂÔ¿Õ¸ñ¡¢»»ĞĞºÍTAB */
+	/* å¿½ç•¥ç©ºæ ¼ã€æ¢è¡Œå’ŒTAB */
 	while (isspace(ch)){
 		next_ch();
 	}
-	if (isalpha(ch)){			/* Ãû×Ö»ò±£Áô×ÖÒÔalpha¿ªÍ· */
+	if (isalpha(ch)){			/* åå­—æˆ–ä¿ç•™å­—ä»¥alphaå¼€å¤´ */
 		k = 0;
 		symbol = IDENTIFIER_SYM;
 		do {
@@ -165,20 +165,20 @@ int next_sym()
 			}
 		}
 	}
-	else if (isdigit(ch)){			/* ¼ì²âÊÇ·ñÎªÊı×Ö£ºÒÔ0..9¿ªÍ· */
+	else if (isdigit(ch)){			/* æ£€æµ‹æ˜¯å¦ä¸ºæ•°å­—ï¼šä»¥0..9å¼€å¤´ */
 		num = 0;
 		symbol = INTEGER_CONST_SYM;
 		do {
 			num = 10*num + ch - '0';
 			next_ch();
-		} while (isdigit(ch)); /* »ñÈ¡Êı×ÖµÄÖµ */
+		} while (isdigit(ch)); /* è·å–æ•°å­—çš„å€¼ */
 		
 		if (num > INTEGER_MAX || num < 0){
-			error(lineno, 21);		//ÊıÖµÌ«´ó
+			error(lineno, 21);		//æ•°å€¼å¤ªå¤§
 			num = 0;
 		}
 	}
-	else if (ch == ':'){		/* ¼ì²â¸³Öµ·ûºÅ */
+	else if (ch == ':'){		/* æ£€æµ‹èµ‹å€¼ç¬¦å· */
 		next_ch();
 		if (ch == '='){
 			symbol = BECOMES_SYM;
@@ -188,7 +188,7 @@ int next_sym()
 			symbol = COLON_SYM;
 		}
 	}
-	else if (ch == '<') {		/* ¼ì²âĞ¡ÓÚ»òĞ¡ÓÚµÈÓÚ·ûºÅ */
+	else if (ch == '<') {		/* æ£€æµ‹å°äºæˆ–å°äºç­‰äºç¬¦å· */
 		next_ch();
 		if (ch == '='){
 			symbol = LEQ_SYM;
@@ -200,7 +200,7 @@ int next_sym()
 		}
 		else symbol = LSS_SYM;
 	}
-	else if (ch=='>'){		/* ¼ì²â´óÓÚ»ò´óÓÚµÈÓÚ·ûºÅ */
+	else if (ch=='>'){		/* æ£€æµ‹å¤§äºæˆ–å¤§äºç­‰äºç¬¦å· */
 		next_ch();
 		if (ch == '='){
 			symbol = GEQ_SYM;
@@ -221,7 +221,7 @@ int next_sym()
 			error(lineno, 38);
 			k = 0;
 		}
-		str_buffer[k-1] = '\0';//ÏûÈ¥"
+		str_buffer[k-1] = '\0';//æ¶ˆå»"
 		symbol = STR_CONST_SYM;
 		next_ch();
 	}
@@ -232,16 +232,16 @@ int next_sym()
 		next_ch();
 		if(ch != '\''){
 			num = 0;
-			error(lineno, 60);//ÉÙÒ»¸ö¡¯
-			// TODO:Ìøµ½ÕıÈ·µÄÎ»ÖÃ¡£
+			error(lineno, 60);//å°‘ä¸€ä¸ªâ€™
+			// TODO:è·³åˆ°æ­£ç¡®çš„ä½ç½®ã€‚
 		}
 		else
 			next_ch();
 	}
 	else{
-		symbol = ch_symbol(ch);		/* µ±·ûºÅ²»Âú×ãÉÏÊöÌõ¼şÊ±£¬È«²¿°´ÕÕµ¥×Ö·û·ûºÅ´¦Àí */
+		symbol = ch_symbol(ch);		/* å½“ç¬¦å·ä¸æ»¡è¶³ä¸Šè¿°æ¡ä»¶æ—¶ï¼Œå…¨éƒ¨æŒ‰ç…§å•å­—ç¬¦ç¬¦å·å¤„ç† */
 		if(symbol == END_SYM){
-			info(lineno, "²»ÄÜÊ¶±ğµÄ×Ö·û£º");
+			info(lineno, "ä¸èƒ½è¯†åˆ«çš„å­—ç¬¦ï¼š");
 			printf("%d\n", ch);
 		}
 		if (symbol != PERIOD_SYM)
